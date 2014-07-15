@@ -75,11 +75,10 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
             $attachment = $attachments[0];
             // and set it as the post thumbnail
             set_post_thumbnail( $post_id, $attachment_id );
-            update_post_meta( $post_id, '_hide_featured_on_single', 'true' );
+            update_post_meta( $post_id, '_is_video', true );
         }
     } else {
-            update_post_meta( $post_id, '_hide_featured_on_single', 'false' );
-            update_post_meta( $post_id, '_wds_ms_is_video', 'true' );
+            update_post_meta( $post_id, '_is_video', false );
             return;
     }
 
