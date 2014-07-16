@@ -2,7 +2,7 @@
 Contributors: bradparbs, coreymcollins, jtsternberg
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
-Requires at least: ***
+Requires at least: 3.7
 Tested up to: 3.9
 Stable tag: 1.0
 License: GPLv2 or later
