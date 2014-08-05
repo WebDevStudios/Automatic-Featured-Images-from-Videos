@@ -34,6 +34,9 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	// Only check the first 1000 characters of our post.
 	$content = substr( $content, 0, 800 );
 
+	// allow developers to filter the content to allow for searching in postmeta or other places
+	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content );
+
 	// Props to @rzen for lending his massive brain smarts to help with the regex
 	$do_video_thumbnail = (
 		isset( $post->ID )
