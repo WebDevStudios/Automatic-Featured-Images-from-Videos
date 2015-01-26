@@ -3,7 +3,7 @@
 Plugin Name: Automatic Featured Images from YouTube / Vimeo
 Plugin URI: http://webdevstudios.com
 Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that vidoe's thumbnail.
-Version: 1.0.0
+Version: 1.0.1
 Author: WebDevStudios
 Author URI: http://webdevstudios.com
 License: GPLv2
@@ -21,8 +21,6 @@ License: GPLv2
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-
 */
 
 /**
@@ -39,8 +37,8 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 
 	// Props to @rzen for lending his massive brain smarts to help with the regex
 	$do_video_thumbnail = (
-		isset( $post->ID )
-		&& ! has_post_thumbnail( $post_id )
+		get_the_ID()
+		&& ! has_post_thumbnail( get_the_ID() )
 		&& $content
 		// Get the video and thumb URLs if they exist
 		&& ( preg_match( '/\/\/(www\.)?youtube\.com\/(watch|embed)\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches ) ||
@@ -52,8 +50,8 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	}
 
 	$video_thumbnail_url = false;
-	$youtube_id          = $youtube_matches[4];
-	$vimeo_id            = preg_replace( "/[^0-9]/", "", $vimeo_matches[0] );
+	$youtube_id = ! empty( $youtube_matches ) ? $youtube_matches[4] : '';
+	$vimeo_id = ! empty( $vimeo_matches ) ? preg_replace( "/[^0-9]/", "", $vimeo_matches[0] ) : '';
 
 	if ( $youtube_id ) {
 		// Check to see if our max-res image exists
@@ -73,7 +71,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	// If we found an image...
 	$attachment_id = $video_thumbnail_url && ! is_wp_error( $video_thumbnail_url )
 		// Then sideload it
-		? wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, sanitize_title( get_the_title() ) )
+		? wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, sanitize_title( preg_replace( "/[^a-zA-Z0-9\s]/", "-", get_the_title() ) ) )
 		// No thumbnail url found
 		: 0;
 
@@ -91,7 +89,7 @@ add_action( 'save_post', 'wds_set_media_as_featured_image', 10, 2 );
 
 function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null ) {
 
-	if ( !$url || !$post_id ) {
+	if ( ! $url || ! $post_id ) {
 		return new WP_Error( 'missing', __( 'Need a valid URL and post ID...', 'automatic-featured-images-from-videos' ) );
 	}
 
@@ -118,7 +116,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 
 	// override filename if given, reconstruct server path
 	if ( !empty( $filename ) ) {
-		$filename = sanitize_file_name($filename);
+		$filename = sanitize_file_name( $filename );
 		// extract path parts
 		$tmppath = pathinfo( $tmp );
 		// build new path
@@ -144,7 +142,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 
 	$post_data = array(
 		// just use the original filename (no extension)
-		'post_title' => basename( $url_filename, '.' . $url_type['ext'] ),
+		'post_title' => get_the_title( $post_id ),
 		// make sure gets tied to parent
 		'post_parent' => $post_id,
 	);
