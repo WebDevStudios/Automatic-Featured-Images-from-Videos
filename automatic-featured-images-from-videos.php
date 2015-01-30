@@ -28,6 +28,10 @@ License: GPLv2
  */
 function wds_set_media_as_featured_image( $post_id, $post ) {
 
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
 	$content = isset( $post->post_content ) ? $post->post_content : '';
 	// Only check the first 1000 characters of our post.
 	$content = substr( $content, 0, 800 );
@@ -37,8 +41,8 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 
 	// Props to @rzen for lending his massive brain smarts to help with the regex
 	$do_video_thumbnail = (
-		get_the_ID()
-		&& ! has_post_thumbnail( get_the_ID() )
+		$post_id
+		&& ! has_post_thumbnail( $post_id )
 		&& $content
 		// Get the video and thumb URLs if they exist
 		&& ( preg_match( '/\/\/(www\.)?youtube\.com\/(watch|embed)\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches ) ||
