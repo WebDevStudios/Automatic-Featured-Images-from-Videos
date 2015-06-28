@@ -37,6 +37,9 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 ## Changelog ##
 
+### 1.0.2 ###
+* Add support for youtube short links, fixes [#3](https://github.com/WebDevStudios/Automatic-Featured-Images-from-Videos/issues/3)
+
 ### 1.0.1 ###
 * Fix bug with special characters in YouTube video titles
 * Fix bug where duplicate images would be uploaded and set as featured image when editing a post
