@@ -1,23 +1,23 @@
-# Automatic Featured Images from Videos #
+=== Automatic Featured Images from Videos ===
 
-Contributors: bradparbs, coreymcollins, jtsternberg, webdevstudios   
-Donate link: http://webdevstudios.com/   
-Tags: video, youtube, vimeo, featured image   
-Requires at least: 3.7   
-Tested up to: 4.1   
-Stable tag: 1.0.1   
-License: GPLv2 or later   
-License URI: http://www.gnu.org/licenses/gpl-2.0.html   
+Contributors: bradparbs, coreymcollins, jtsternberg, webdevstudios
+Donate link: http://webdevstudios.com/
+Tags: video, youtube, vimeo, featured image
+Requires at least: 3.7
+Tested up to: 4.1
+Stable tag: 1.0.1
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 If a YouTube or Vimeo video exists in the first portion of a post, automatically set the post's featured image to that video's thumbnail.
 
-## Description ##
+== Description ==
 
 When placing a YouTube or Vimeo video within the first 1000 characters of a post, the thumbnail of that video will automatically be sideloaded and set as the featured image for the post as long as the post does not already have a featured image set.
 
 In addition, after setting the video thumbnail as the featured image, an “is_video” post meta field is updated to allow for the use of conditional statements within your loop.
 
-## Installation ##
+== Installation ==
 
 = From your WordPress dashboard =
 
@@ -31,11 +31,11 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 2. Upload the 'Automatic Featured Images from Videos' directory to your '/wp-content/plugins/' directory.
 3. Activate Automatic Featured Images from Videos from your Plugins page.
 
-## Frequently Asked Questions ##
+== Frequently Asked Questions ==
 
-## Screenshots ##
+== Screenshots ==
 
-## Changelog ##
+== Changelog ==
 
 = 1.0.1 =
 * Fix bug with special characters in YouTube video titles
