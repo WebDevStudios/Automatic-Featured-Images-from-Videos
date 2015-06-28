@@ -19,13 +19,13 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 ## Installation ##
 
-= From your WordPress dashboard =
+### From your WordPress dashboard ###
 
 1. Visit 'Plugins > Add New’.
 2. Search for 'Automatic Featured Images from Videos’.
 3. Activate Automatic Featured Images from Videos from your Plugins page.
 
-= From WordPress.org =
+### From WordPress.org ###
 
 1. Download Automatic Featured Images from Videos.
 2. Upload the 'Automatic Featured Images from Videos' directory to your '/wp-content/plugins/' directory.
@@ -37,9 +37,9 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 ## Changelog ##
 
-= 1.0.1 =
+### 1.0.1 ###
 * Fix bug with special characters in YouTube video titles
 * Fix bug where duplicate images would be uploaded and set as featured image when editing a post
 
-= 1.0 =
+### 1.0 ###
 * Initial release
