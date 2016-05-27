@@ -17,6 +17,8 @@ When placing a YouTube or Vimeo video within the first 1000 characters of a post
 
 In addition, after setting the video thumbnail as the featured image, an “is_video” post meta field is updated to allow for the use of conditional statements within your loop.
 
+[Pluginize](https://pluginize.com/?utm_source=automatic-feat-images&utm_medium=text&utm_campaign=wporg) was launched in 2016 by [WebDevStudios](https://webdevstudios.com/) to promote, support, and house all of their [WordPress products](https://pluginize.com/shop/?utm_source=automatic-feat-images&utm_medium=text&utm_campaign=wporg). Pluginize is not only creating new products for WordPress all the time, but also provides [ongoing support and development for WordPress community favorites like CPTUI](https://wordpress.org/plugins/custom-post-type-ui/), [CMB2](https://wordpress.org/plugins/cmb2/), and more.
+
 == Installation ==
 
 = From your WordPress dashboard =
