@@ -38,7 +38,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	}
 
 	$content = isset( $post->post_content ) ? $post->post_content : '';
-	// Only check the first 1000 characters of our post.
+	// Only check the first 800 characters of our post.
 	$content = substr( $content, 0, 800 );
 
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
