@@ -50,7 +50,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 		&& ! has_post_thumbnail( $post_id )
 		&& $content
 		// Get the video and thumb URLs if they exist.
-		&& ( preg_match( '\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)', $content, $youtube_matches )
+		&& ( preg_match( '/\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches )
 			|| preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) )
 	);
 
