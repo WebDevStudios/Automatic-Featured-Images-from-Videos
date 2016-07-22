@@ -5,7 +5,7 @@ Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 3.7
 Tested up to: 4.5.2
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,10 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 ## Screenshots ##
 
 ## Changelog ##
+
+### 1.0.3 ###
+* Switch to using WP HTTP API functions over get_headers(). Hopefully removes potential server config conflicts.
+* Reverse originally incorrect logic in YouTube thumbnail selection based on header results.
 
 ### 1.0.2 ###
 * Add support for youtube short links, fixes [#3](https://github.com/WebDevStudios/Automatic-Featured-Images-from-Videos/issues/3)
