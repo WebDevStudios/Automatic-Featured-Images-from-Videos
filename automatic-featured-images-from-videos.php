@@ -67,7 +67,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 		// Check to see if our max-res image exists.
 		$remote_headers = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
 		$is_404 = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
-		$video_thumbnail_url = $is_404 ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
+		$video_thumbnail_url = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
 
 	} elseif ( $vimeo_id ) {
 
