@@ -1,13 +1,13 @@
 # Automatic Featured Images from Videos #
 
 Contributors: [bradparbs](https://github.com/bradp), [coreymcollins](https://github.com/coreymcollins), [jtsternberg](https://github.com/jtsternberg), [webdevstudios](https://github.com/webdevstudios)   
-Donate link: http://webdevstudios.com/   
-Tags: video, youtube, vimeo, featured image   
-Requires at least: 3.7   
-Tested up to: 4.2.2   
-Stable tag: 1.0.2   
-License: GPLv2 or later   
-License URI: http://www.gnu.org/licenses/gpl-2.0.html   
+Donate link: http://webdevstudios.com/
+Tags: video, youtube, vimeo, featured image
+Requires at least: 3.7
+Tested up to: 4.5.2
+Stable tag: 1.0.2
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 If a YouTube or Vimeo video exists in the first portion of a post, automatically set the post's featured image to that video's thumbnail.
 
