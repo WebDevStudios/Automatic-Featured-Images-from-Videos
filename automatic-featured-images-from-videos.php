@@ -37,6 +37,10 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 		return;
 	}
 
+	if ( wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+
 	$content = isset( $post->post_content ) ? $post->post_content : '';
 	// Only check the first 800 characters of our post.
 	$content = substr( $content, 0, 800 );
