@@ -39,12 +39,10 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 == Changelog ==
 
-= 1.0.4 =
-* Return early if saving a revision.
-
 = 1.0.3 =
 * Switch to using WP HTTP API functions over get_headers(). Hopefully removes potential server config conflicts.
 * Reverse originally incorrect logic in YouTube thumbnail selection based on header results.
+* Return early if saving a revision.
 
 = 1.0.2 =
 * Add support for youtube short links, fixes [#3](https://github.com/WebDevStudios/Automatic-Featured-Images-from-Videos/issues/3)
