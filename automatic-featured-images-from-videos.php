@@ -68,10 +68,20 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	$vimeo_id = ! empty( $vimeo_matches ) ? preg_replace( "/[^0-9]/", "", $vimeo_matches[0] ) : '';
 
 	if ( $youtube_id ) {
+		$video_thumbnail_url_string = 'http://img.youtube.com/vi/%s/%s';
 		// Check to see if our max-res image exists.
-		$remote_headers = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
+		$remote_headers = wp_remote_head( sprintf( $video_thumbnail_url_string, $youtube_id . 'maxresdefault.jpg' ) );
 		$is_404 = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
-		$video_thumbnail_url = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
+
+		if ( ! $is_404 ) {
+			$video_thumbnail_url = sprintf( $video_thumbnail_url_string, $youtube_id . 'maxresdefault.jpg' );
+		} else {
+			// Don't assume we will have something. Assign only if we have something.
+			$default_remote_headers = wp_remote_head( sprintf( $video_thumbnail_url_string, $youtube_id . 'hqdefault.jpg' ) );
+			if ( 200 === wp_remote_retrieve_response_code( $default_remote_headers ) ) {
+				$video_thumbnail_url = sprintf( $video_thumbnail_url_string, $youtube_id . 'hqdefault.jpg' );
+			}
+		}
 
 	} elseif ( $vimeo_id ) {
 
