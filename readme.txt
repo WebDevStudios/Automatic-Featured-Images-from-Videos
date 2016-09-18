@@ -39,6 +39,9 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 == Changelog ==
 
+= 1.1.0 - TBD =
+* Added: Support for cookie-less youtube URLs.
+
 = 1.0.3 =
 * Switch to using WP HTTP API functions over get_headers(). Hopefully removes potential server config conflicts.
 * Reverse originally incorrect logic in YouTube thumbnail selection based on header results.
