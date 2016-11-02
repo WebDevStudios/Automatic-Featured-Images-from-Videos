@@ -29,7 +29,7 @@ License: GPLv2
  * @since 1.0.0
  *
  * @param int    $post_id ID of the post being saved.
- * @param object $post Post object.
+ * @param object $post    Post object.
  */
 function wds_set_media_as_featured_image( $post_id, $post ) {
 
@@ -60,27 +60,28 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	if ( ! $do_video_thumbnail ) {
 		// TODO Delete post_meta that has the URL.
 		update_post_meta( $post_id, '_is_video', false );
-		return ;
+
+		return;
 	}
 
 	$video_thumbnail_url = false;
 
 	// Set the video id.
 	$youtube_id = wds_check_for_youtube( $content );
-	$vimeo_id = wds_check_for_vimeo( $content );
+	$vimeo_id   = wds_check_for_vimeo( $content );
 
 	if ( $youtube_id ) {
 		// Check to see if our max-res image exists.
-		$remote_headers = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
-		$is_404 = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
+		$remote_headers      = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
+		$is_404              = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
 		$video_thumbnail_url = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
 
 	} elseif ( $vimeo_id ) {
 
 		$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
-		if ( isset( $vimeo_data['response']['code'] ) && '200' == $vimeo_data['response']['code'] ){
-			$response = unserialize( $vimeo_data['body'] );
-			$video_thumbnail_url = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
+		if ( isset( $vimeo_data[ 'response' ][ 'code' ] ) && '200' == $vimeo_data[ 'response' ][ 'code' ] ) {
+			$response            = unserialize( $vimeo_data[ 'body' ] );
+			$video_thumbnail_url = isset( $response[ 0 ][ 'thumbnail_large' ] ) ? $response[ 0 ][ 'thumbnail_large' ] : false;
 		}
 
 	}
@@ -104,6 +105,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 
 
 }
+
 add_action( 'save_post', 'wds_set_media_as_featured_image', 10, 2 );
 
 /**
@@ -120,8 +122,9 @@ add_action( 'save_post', 'wds_set_media_as_featured_image', 10, 2 );
  */
 function wds_check_for_youtube( $content ) {
 	if ( preg_match( '/\/\/(www\.)?(youtu|youtube)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches ) ) {
-		return $youtube_matches[6];
+		return $youtube_matches[ 6 ];
 	}
+
 	return false;
 }
 
@@ -137,10 +140,13 @@ function wds_check_for_youtube( $content ) {
  * @return string The value of the vimeo id.
  *
  */
-function wds_check_for_vimeo( $content ){
-	if (preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ){
-		return $vimeo_matches;
+function wds_check_for_vimeo( $content ) {
+	if ( preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ) {
+		preg_replace( "/[^0-9]/", "", $vimeo_matches[ 0 ] );
+
+		return $vimeo_matches[ 0 ];
 	}
+
 	return false;
 }
 
@@ -153,6 +159,7 @@ function wds_check_for_vimeo( $content ){
  * @param string      $url      URL to sideload.
  * @param int         $post_id  Post ID to attach to.
  * @param string|null $filename Filename to use.
+ *
  * @return mixed
  */
 function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null ) {
@@ -169,8 +176,9 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// If error storing temporarily, unlink.
 	if ( is_wp_error( $tmp ) ) {
 		// Clean up.
-		@unlink( $file_array['tmp_name'] );
-		$file_array['tmp_name'] = '';
+		@unlink( $file_array[ 'tmp_name' ] );
+		$file_array[ 'tmp_name' ] = '';
+
 		// And output wp_error.
 		return $tmp;
 	}
@@ -178,19 +186,19 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// Fix file filename for query strings.
 	preg_match( '/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $url, $matches );
 	// Extract filename from url for title.
-	$url_filename = basename($matches[0]);
+	$url_filename = basename( $matches[ 0 ] );
 	// Determine file type (ext and mime/type).
-	$url_type = wp_check_filetype($url_filename);
+	$url_type = wp_check_filetype( $url_filename );
 
 	// Override filename if given, reconstruct server path.
-	if ( !empty( $filename ) ) {
+	if ( ! empty( $filename ) ) {
 		$filename = sanitize_file_name( $filename );
 		// Extract path parts.
 		$tmppath = pathinfo( $tmp );
 		// Build new path.
-		$new = $tmppath['dirname'] . '/'. $filename . '.' . $tmppath['extension'];
+		$new = $tmppath[ 'dirname' ] . '/' . $filename . '.' . $tmppath[ 'extension' ];
 		// Renames temp file on server.
-		rename($tmp, $new);
+		rename( $tmp, $new );
 		// Push new filename (in path) to be used in file array later.
 		$tmp = $new;
 	}
@@ -198,19 +206,19 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	/* Assemble file data (should be built like $_FILES since wp_handle_sideload() will be using). */
 
 	// Full server path to temp file.
-	$file_array['tmp_name'] = $tmp;
+	$file_array[ 'tmp_name' ] = $tmp;
 
-	if ( !empty( $filename ) ) {
+	if ( ! empty( $filename ) ) {
 		// User given filename for title, add original URL extension.
-		$file_array['name'] = $filename . '.' . $url_type['ext'];
+		$file_array[ 'name' ] = $filename . '.' . $url_type[ 'ext' ];
 	} else {
 		// Just use original URL filename.
-		$file_array['name'] = $url_filename;
+		$file_array[ 'name' ] = $url_filename;
 	}
 
 	$post_data = array(
 		// Just use the original filename (no extension).
-		'post_title' => get_the_title( $post_id ),
+		'post_title'  => get_the_title( $post_id ),
 		// Make sure gets tied to parent.
 		'post_parent' => $post_id,
 	);
@@ -227,7 +235,8 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// If error storing permanently, unlink.
 	if ( is_wp_error( $att_id ) ) {
 		// Clean up.
-		@unlink( $file_array['tmp_name'] );
+		@unlink( $file_array[ 'tmp_name' ] );
+
 		// And output wp_error.
 		return $att_id;
 	}
