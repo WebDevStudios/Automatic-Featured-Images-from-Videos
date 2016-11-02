@@ -48,21 +48,24 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content );
 
-	// Props to @rzen for lending his massive brain smarts to help with the regex.
+	// Check if we there is a video we should do this with.
 	$do_video_thumbnail = (
 		$post_id
 		&& ! has_post_thumbnail( $post_id )
 		&& $content
-		// Get the video and thumb URLs if they exist.
+		// Check if this contains a youtube/vimeo url
 		&& ( wds_check_for_youtube( $content ) || wds_check_for_vimeo( $content ) )
 	);
 
 	if ( ! $do_video_thumbnail ) {
-		return update_post_meta( $post_id, '_is_video', false );
+		// TODO Delete post_meta that has the URL.
+		update_post_meta( $post_id, '_is_video', false );
+		return ;
 	}
 
 	$video_thumbnail_url = false;
 
+	// Set the video id.
 	$youtube_id = wds_check_for_youtube( $content );
 	$vimeo_id = wds_check_for_vimeo( $content );
 
@@ -98,10 +101,22 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	set_post_thumbnail( $post_id, $attachment_id );
 	update_post_meta( $post_id, '_is_video', true );
 
+
 }
 add_action( 'save_post', 'wds_set_media_as_featured_image', 10, 2 );
 
-
+/**
+ * Check if the content contains a youtube url.
+ *
+ * Props to @rzen for lending his massive brain smarts to help with the regex.
+ *
+ * @author Gary Kovar
+ *
+ * @param $content
+ *
+ * @return string The value of the youtube id.
+ *
+ */
 function wds_check_for_youtube( $content ) {
 	if ( preg_match( '/\/\/(www\.)?(youtu|youtube)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches ) ) {
 		return $youtube_matches[6];
@@ -109,6 +124,18 @@ function wds_check_for_youtube( $content ) {
 	return false;
 }
 
+/**
+ * Check if the content contains a vimeo url.
+ *
+ * Props to @rzen for lending his massive brain smarts to help with the regex.
+ *
+ * @author Gary Kovar
+ *
+ * @param $content
+ *
+ * @return string The value of the vimeo id.
+ *
+ */
 function wds_check_for_vimeo( $content ){
 	if (preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ){
 		return $vimeo_matches;
