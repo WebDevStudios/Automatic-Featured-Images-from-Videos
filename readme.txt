@@ -42,6 +42,7 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 = 1.0.4 =
 * Store the video url in post meta.
 * Refactored checks for video ID.
+* Return early if saving a revision.
 
 = 1.0.3 =
 * Switch to using WP HTTP API functions over get_headers(). Hopefully removes potential server config conflicts.
