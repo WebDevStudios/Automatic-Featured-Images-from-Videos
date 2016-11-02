@@ -54,8 +54,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 		&& ! has_post_thumbnail( $post_id )
 		&& $content
 		// Get the video and thumb URLs if they exist.
-		&& ( preg_match( '/\/\/(www\.)?(youtu|youtube)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches )
-			|| preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) )
+		&& ( wds_check_for_youtube( $content ) || wds_check_for_vimeo( $content ) )
 	);
 
 	if ( ! $do_video_thumbnail ) {
@@ -64,8 +63,10 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 
 	$video_thumbnail_url = false;
 
-	$youtube_id = ! empty( $youtube_matches ) ? $youtube_matches[6] : '';
-	$vimeo_id = ! empty( $vimeo_matches ) ? preg_replace( "/[^0-9]/", "", $vimeo_matches[0] ) : '';
+	$youtube_id = wds_check_for_youtube( $content );
+	//$youtube_id = ! empty( $youtube_matches ) ? $youtube_matches[6] : '';
+	$vimeo_id = wds_check_for_vimeo( $content );
+	//$vimeo_id = ! empty( $vimeo_matches ) ? preg_replace( "/[^0-9]/", "", $vimeo_matches[0] ) : '';
 
 	if ( $youtube_id ) {
 		// Check to see if our max-res image exists.
@@ -101,6 +102,22 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 
 }
 add_action( 'save_post', 'wds_set_media_as_featured_image', 10, 2 );
+
+
+function wds_check_for_youtube( $content ) {
+	if ( preg_match( '/\/\/(www\.)?(youtu|youtube)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches ) ) {
+		return $youtube_matches[6];
+	}
+	return false;
+}
+
+function wds_check_for_vimeo( $content ){
+	if (preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ){
+		return $vimeo_matches;
+	}
+	return false;
+}
+
 
 /**
  * Handle the upload of a new image.
