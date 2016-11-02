@@ -100,6 +100,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	// Woot! we got an image, so set it as the post thumbnail.
 	set_post_thumbnail( $post_id, $attachment_id );
 	update_post_meta( $post_id, '_is_video', true );
+	// TODO set the URL meta.
 
 
 }
