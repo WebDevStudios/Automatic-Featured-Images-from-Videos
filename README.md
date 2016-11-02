@@ -1,10 +1,10 @@
 # Automatic Featured Images from Videos #
 
-Contributors: [bradparbs](https://github.com/bradp), [coreymcollins](https://github.com/coreymcollins), [jtsternberg](https://github.com/jtsternberg), [webdevstudios](https://github.com/webdevstudios)   
+Contributors: [bradparbs](https://github.com/bradp), [coreymcollins](https://github.com/coreymcollins), [jtsternberg](https://github.com/jtsternberg), [webdevstudios](https://github.com/webdevstudios), [binarygary](https://github.com/binarygaryfi)   
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 3.7
-Tested up to: 4.5.2
+Tested up to: 4.6.1
 Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -36,6 +36,10 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 ## Screenshots ##
 
 ## Changelog ##
+
+### 1.0.4 ###
+* Store the video url in post meta.
+* Refactored checks for video ID.
 
 ### 1.0.3 ###
 * Switch to using WP HTTP API functions over get_headers(). Hopefully removes potential server config conflicts.
