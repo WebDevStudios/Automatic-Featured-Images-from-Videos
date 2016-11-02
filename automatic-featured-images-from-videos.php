@@ -58,8 +58,8 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	);
 
 	if ( ! $do_video_thumbnail ) {
-		// TODO Delete post_meta that has the URL.
 		update_post_meta( $post_id, '_is_video', false );
+		delete_post_meta( $post_id, '_video_url' );
 
 		return;
 	}
@@ -75,6 +75,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 		$remote_headers      = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
 		$is_404              = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
 		$video_thumbnail_url = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
+		$video_url           = 'https://www.youtube.com/watch?v=' . $youtube_id;
 
 	} elseif ( $vimeo_id ) {
 
@@ -82,6 +83,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 		if ( isset( $vimeo_data[ 'response' ][ 'code' ] ) && '200' == $vimeo_data[ 'response' ][ 'code' ] ) {
 			$response            = unserialize( $vimeo_data[ 'body' ] );
 			$video_thumbnail_url = isset( $response[ 0 ][ 'thumbnail_large' ] ) ? $response[ 0 ][ 'thumbnail_large' ] : false;
+			$video_url           = 'https://vimeo.com/' . $vimeo_id;
 		}
 
 	}
@@ -101,8 +103,7 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	// Woot! we got an image, so set it as the post thumbnail.
 	set_post_thumbnail( $post_id, $attachment_id );
 	update_post_meta( $post_id, '_is_video', true );
-	// TODO set the URL meta.
-
+	update_post_meta( $post_id, '_video_url', $video_url );
 
 }
 
