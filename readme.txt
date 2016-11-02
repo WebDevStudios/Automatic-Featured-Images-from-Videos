@@ -40,7 +40,7 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 == Changelog ==
 
 = 1.0.4 =
-* Store the video url in post meta.
+* Store the full video url in post meta _video_url.
 * Refactored checks for video ID.
 
 = 1.0.3 =
