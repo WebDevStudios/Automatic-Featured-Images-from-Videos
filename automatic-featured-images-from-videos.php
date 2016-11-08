@@ -24,19 +24,23 @@ License: GPLv2
 */
 
 
+add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
+
+
 /**
- * This function name is no longer accurate but it may be in use.
+ * This function name is no longer accurate but it may be in use so we will leave it.
  *
- * @author Gary Kovar
+ * @author     Gary Kovar
  *
- * @since 1.0.5
+ * @deprecated 1.0.5
  */
-function wds_set_media_as_featured_image($post_id, $post) {
+function wds_set_media_as_featured_image( $post_id, $post ) {
 	wds_check_if_content_contains_video( $post_id, $post );
+	_doing_it_wrong( 'wds_set_media_as_feature_image', 'This function has been replaced with wds_check_if_content_contains_video', '4.6' );
 }
 
 /**
- * Check if a post contains video.  Maybe set a thumnail, store the video URL as post meta.
+ * Check if a post contains video.  Maybe set a thumbnail, store the video URL as post meta.
  *
  * @author Gary Kovar
  *
@@ -95,7 +99,6 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 		delete_post_meta( $post_id, '_video_url' );
 	}
 
-
 }
 
 /**
@@ -103,8 +106,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
  *
  * @since 1.0.0
  *
- * @param int    $post_id ID of the post being saved.
- * @param object $post    Post object.
+ * @param string $video_thumbnail_url URL of the image thumbnail.
  */
 function wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url ) {
 
@@ -124,8 +126,6 @@ function wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url ) {
 	set_post_thumbnail( $post_id, $attachment_id );
 
 }
-
-add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
 
 /**
  * Check if the content contains a youtube url.
@@ -262,8 +262,14 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	return $att_id;
 }
 
-
-function wds_get_youtube_thumbnail_details( $youtube_id ) {
+/*
+ * Get the image thumbnail and the video url from a youtube id.
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.0.5
+ */
+function wds_get_youtube_details( $youtube_id ) {
 	$remote_headers                 = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
 	$is_404                         = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
 	$video[ 'video_thumbnail_url' ] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
@@ -272,8 +278,14 @@ function wds_get_youtube_thumbnail_details( $youtube_id ) {
 	return $video;
 }
 
-
-function wds_get_vimeo_thumnail_details( $vimeo_id ) {
+/*
+ * Get the image thumbnail and the video url from a vimeo id.
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.0.5
+ */
+function wds_get_vimeo_details( $vimeo_id ) {
 	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
 	if ( isset( $vimeo_data[ 'response' ][ 'code' ] ) && '200' == $vimeo_data[ 'response' ][ 'code' ] ) {
 		$response                       = unserialize( $vimeo_data[ 'body' ] );
@@ -284,14 +296,30 @@ function wds_get_vimeo_thumnail_details( $vimeo_id ) {
 	return $video;
 }
 
+/*
+ * Check if the post is a video.
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.0.5
+ */
+function wds_post_has_video( $post_id ) {
+	if ( ! metadata_exists( 'post', $post_id, '_is_video' ) ) {
+		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
+	}
 
+	return get_post_meta( $post_id, '_is_video', true);
+}
 
-
-// What are things we might want to do with this plugin?
-// check if the content contains video.
-// set/get the video url.
-// set/get the thumbnail.
-// run automatically or override with a filter.
-
-
-// If the post is being loaded (somehow) and it _is_video
+/*
+ * Get the URL for the video.
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.0.5
+ */
+function wds_get_video_url( $post_id ) {
+	if ( wds_post_has_video( $post_id ) ) {
+		return get_post_meta( $post_id, '_video_url', true );
+	}
+}
