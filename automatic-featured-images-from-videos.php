@@ -70,12 +70,14 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 		$youtube_details     = wds_get_youtube_details( $youtube_id );
 		$video_thumbnail_url = $youtube_details[ 'video_thumbnail_url' ];
 		$video_url           = $youtube_details[ 'video_url' ];
+		$video_embed_url     = $youtube_details[ 'video_embed_url' ];
 	}
 
 	if ( $vimeo_id ) {
 		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
 		$video_thumbnail_url = $vimeo_details[ 'video_thumbnail_url' ];
 		$video_url           = $vimeo_details[ 'video_url' ];
+		$video_embed_url     = $vimeo_details[ 'video_url' ];
 	}
 
 	if ( $post_id
@@ -94,9 +96,11 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	) {
 		update_post_meta( $post_id, '_is_video', true );
 		update_post_meta( $post_id, '_video_url', $video_url );
+		update_post_meta( $post_id, '_video_embed_url', $video_embed_url );
 	} else {
 		update_post_meta( $post_id, '_is_video', false );
 		delete_post_meta( $post_id, '_video_url' );
+		delete_post_meta( $post_id, '_video_embed_url' );
 	}
 
 }
@@ -274,6 +278,7 @@ function wds_get_youtube_details( $youtube_id ) {
 	$is_404                         = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
 	$video[ 'video_thumbnail_url' ] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
 	$video[ 'video_url' ]           = 'https://www.youtube.com/watch?v=' . $youtube_id;
+	$video[ 'video_embed_url' ]     = 'https://www.youtube.com/embed/' . $youtube_id;
 
 	return $video;
 }
@@ -308,7 +313,7 @@ function wds_post_has_video( $post_id ) {
 		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
 	}
 
-	return get_post_meta( $post_id, '_is_video', true);
+	return get_post_meta( $post_id, '_is_video', true );
 }
 
 /*
@@ -321,5 +326,18 @@ function wds_post_has_video( $post_id ) {
 function wds_get_video_url( $post_id ) {
 	if ( wds_post_has_video( $post_id ) ) {
 		return get_post_meta( $post_id, '_video_url', true );
+	}
+}
+
+/*
+ * Get the embeddable URL
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.0.5
+ */
+function wds_get_embeddable_video_url( $post_id ) {
+	if ( wds_post_has_video( $post_id ) ) {
+		return get_post_meta( $post_id, '_video_embed_url', true );
 	}
 }
