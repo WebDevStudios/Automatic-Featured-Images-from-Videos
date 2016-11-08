@@ -23,21 +23,31 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+
 /**
- * If a YouTube or Vimeo video is added in the post content, grab its thumbnail and set it as the featured image.
+ * This function name is no longer accurate but it may be in use.
  *
- * @since 1.0.0
+ * @author Gary Kovar
+ *
+ * @since 1.0.5
+ */
+function wds_set_media_as_featured_image($post_id, $post) {
+	wds_check_if_content_contains_video( $post_id, $post );
+}
+
+/**
+ * Check if a post contains video.  Maybe set a thumnail, store the video URL as post meta.
+ *
+ * @author Gary Kovar
+ *
+ * @since  1.0.5
  *
  * @param int    $post_id ID of the post being saved.
  * @param object $post    Post object.
  */
-function wds_set_media_as_featured_image( $post_id, $post ) {
+function wds_check_if_content_contains_video( $post_id, $post ) {
 
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-		return;
-	}
-
-	if ( wp_is_post_revision( $post_id ) ) {
 		return;
 	}
 
@@ -48,50 +58,60 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content );
 
-	// Check if we there is a video we should do this with.
-	$do_video_thumbnail = (
-		$post_id
-		&& ! has_post_thumbnail( $post_id )
-		&& $content
-		// Check if this contains a youtube/vimeo url
-		&& ( wds_check_for_youtube( $content ) || wds_check_for_vimeo( $content ) )
-	);
-
-	if ( ! $do_video_thumbnail ) {
-		update_post_meta( $post_id, '_is_video', false );
-		delete_post_meta( $post_id, '_video_url' );
-
-		return;
-	}
-
-	$video_thumbnail_url = false;
-
 	// Set the video id.
 	$youtube_id = wds_check_for_youtube( $content );
 	$vimeo_id   = wds_check_for_vimeo( $content );
 
 	if ( $youtube_id ) {
-		// Check to see if our max-res image exists.
-		$remote_headers      = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
-		$is_404              = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
-		$video_thumbnail_url = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
-		$video_url           = 'https://www.youtube.com/watch?v=' . $youtube_id;
-
-	} elseif ( $vimeo_id ) {
-
-		$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
-		if ( isset( $vimeo_data[ 'response' ][ 'code' ] ) && '200' == $vimeo_data[ 'response' ][ 'code' ] ) {
-			$response            = unserialize( $vimeo_data[ 'body' ] );
-			$video_thumbnail_url = isset( $response[ 0 ][ 'thumbnail_large' ] ) ? $response[ 0 ][ 'thumbnail_large' ] : false;
-			$video_url           = 'https://vimeo.com/' . $vimeo_id;
-		}
-
+		$youtube_details     = wds_get_youtube_details( $youtube_id );
+		$video_thumbnail_url = $youtube_details[ 'video_thumbnail_url' ];
+		$video_url           = $youtube_details[ 'video_url' ];
 	}
+
+	if ( $vimeo_id ) {
+		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
+		$video_thumbnail_url = $vimeo_details[ 'video_thumbnail_url' ];
+		$video_url           = $vimeo_details[ 'video_url' ];
+	}
+
+	if ( $post_id
+	     && ! has_post_thumbnail( $post_id )
+	     && $content
+	     && ( $youtube_id || $vimeo_id )
+	) {
+		if ( ! wp_is_post_revision( $post_id ) ) {
+			wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url );
+		}
+	}
+
+	if ( $post_id
+	     && $content
+	     && ( $youtube_id || $vimeo_id )
+	) {
+		update_post_meta( $post_id, '_is_video', true );
+		update_post_meta( $post_id, '_video_url', $video_url );
+	} else {
+		update_post_meta( $post_id, '_is_video', false );
+		delete_post_meta( $post_id, '_video_url' );
+	}
+
+
+}
+
+/**
+ * If a YouTube or Vimeo video is added in the post content, grab its thumbnail and set it as the featured image.
+ *
+ * @since 1.0.0
+ *
+ * @param int    $post_id ID of the post being saved.
+ * @param object $post    Post object.
+ */
+function wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url ) {
 
 	// If we found an image...
 	$attachment_id = $video_thumbnail_url && ! is_wp_error( $video_thumbnail_url )
 		// Then sideload it.
-		? wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, sanitize_title( preg_replace( "/[^a-zA-Z0-9\s]/", "-", get_the_title() ) ) )
+		? wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title() ) ) )
 		// No thumbnail url found.
 		: 0;
 
@@ -102,12 +122,10 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
 
 	// Woot! we got an image, so set it as the post thumbnail.
 	set_post_thumbnail( $post_id, $attachment_id );
-	update_post_meta( $post_id, '_is_video', true );
-	update_post_meta( $post_id, '_video_url', $video_url );
 
 }
 
-add_action( 'save_post', 'wds_set_media_as_featured_image', 10, 2 );
+add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
 
 /**
  * Check if the content contains a youtube url.
@@ -150,7 +168,6 @@ function wds_check_for_vimeo( $content ) {
 
 	return false;
 }
-
 
 /**
  * Handle the upload of a new image.
@@ -244,3 +261,37 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 
 	return $att_id;
 }
+
+
+function wds_get_youtube_thumbnail_details( $youtube_id ) {
+	$remote_headers                 = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
+	$is_404                         = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
+	$video[ 'video_thumbnail_url' ] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
+	$video[ 'video_url' ]           = 'https://www.youtube.com/watch?v=' . $youtube_id;
+
+	return $video;
+}
+
+
+function wds_get_vimeo_thumnail_details( $vimeo_id ) {
+	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
+	if ( isset( $vimeo_data[ 'response' ][ 'code' ] ) && '200' == $vimeo_data[ 'response' ][ 'code' ] ) {
+		$response                       = unserialize( $vimeo_data[ 'body' ] );
+		$video[ 'video_thumbnail_url' ] = isset( $response[ 0 ][ 'thumbnail_large' ] ) ? $response[ 0 ][ 'thumbnail_large' ] : false;
+		$video[ 'video_url' ]           = 'https://vimeo.com/' . $vimeo_id;
+	}
+
+	return $video;
+}
+
+
+
+
+// What are things we might want to do with this plugin?
+// check if the content contains video.
+// set/get the video url.
+// set/get the thumbnail.
+// run automatically or override with a filter.
+
+
+// If the post is being loaded (somehow) and it _is_video
