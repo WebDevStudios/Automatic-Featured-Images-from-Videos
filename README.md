@@ -37,6 +37,13 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 ## Changelog ##
 
+### 1.0.5 ###
+* Added function wds_get_video_url when passed a post_id returns a video URL.
+* Added function wds_get_embed_video_url when passed a post_id returns a video URL that is embeddable.
+* Added function wds_post_has_video to check if a post_id has video.
+* Deprecated wds_set_media_as_featured_image.
+* Refactored the default save_post entry function to handle logic better.
+
 ### 1.0.4 ###
 * Store the full video url in post meta _video_url. 
 * Refactored checks for video ID.
