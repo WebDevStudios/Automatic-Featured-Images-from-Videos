@@ -325,6 +325,10 @@ function wds_post_has_video( $post_id ) {
  */
 function wds_get_video_url( $post_id ) {
 	if ( wds_post_has_video( $post_id ) ) {
+		if ( ! metadata_exists( 'post', $post_id, '_video_url' ) ) {
+			wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
+		}
+
 		return get_post_meta( $post_id, '_video_url', true );
 	}
 }
@@ -338,6 +342,10 @@ function wds_get_video_url( $post_id ) {
  */
 function wds_get_embeddable_video_url( $post_id ) {
 	if ( wds_post_has_video( $post_id ) ) {
+		if ( ! metadata_exists( 'post', $post_id, '_video_embed_url' ) ) {
+			wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
+		}
+
 		return get_post_meta( $post_id, '_video_embed_url', true );
 	}
 }
