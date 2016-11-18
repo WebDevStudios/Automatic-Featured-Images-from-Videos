@@ -347,3 +347,4 @@ function wds_get_embeddable_video_url( $post_id ) {
 		return get_post_meta( $post_id, '_video_embed_url', true );
 	}
 }
+
