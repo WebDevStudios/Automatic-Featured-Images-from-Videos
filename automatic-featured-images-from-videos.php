@@ -23,9 +23,7 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Include the file that handles meta boxes.
-require( 'includes/meta-boxes.php' );
-
+add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
 
 /**
@@ -351,3 +349,30 @@ function wds_get_embeddable_video_url( $post_id ) {
 	}
 }
 
+
+/**
+ * Register a metabox to display the video on post edit view.
+ * @author Gary Kovar
+ * @since 1.1.0
+ */
+function wds_register_display_video_metabox() {
+	global $post;
+
+	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
+		add_meta_box(
+			'wds_display_video_metabox',
+			__( 'Video File found in Content', 'wds-automatic-featured-images-from-video' ),
+			'wds_video_thumbnail_meta'
+		);
+	}
+}
+
+/**
+ * Populate the metabox.
+ * @author Gary Kovar
+ * @since 1.1.0
+ */
+function wds_video_thumbnail_meta() {
+	global $post;
+	echo '<iframe src="' . wds_get_embeddable_video_url($post->ID) . '"></iframe>';
+}
