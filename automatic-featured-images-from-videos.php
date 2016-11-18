@@ -143,7 +143,7 @@ function wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url ) {
  */
 function wds_check_for_youtube( $content ) {
 	if ( preg_match( '/\/\/(www\.)?(youtu|youtube)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches ) ) {
-		return $youtube_matches[ 6 ];
+		return $youtube_matches[6];
 	}
 
 	return false;
@@ -163,7 +163,7 @@ function wds_check_for_youtube( $content ) {
  */
 function wds_check_for_vimeo( $content ) {
 	if ( preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ) {
-		$id = preg_replace( "/[^0-9]/", "", $vimeo_matches[ 0 ] );
+		$id = preg_replace( "/[^0-9]/", '', $vimeo_matches[0] );
 
 		return substr( $id, 0, 8 );
 	}
@@ -196,8 +196,8 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// If error storing temporarily, unlink.
 	if ( is_wp_error( $tmp ) ) {
 		// Clean up.
-		@unlink( $file_array[ 'tmp_name' ] );
-		$file_array[ 'tmp_name' ] = '';
+		@unlink( $file_array['tmp_name'] );
+		$file_array['tmp_name'] = '';
 
 		// And output wp_error.
 		return $tmp;
@@ -206,7 +206,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// Fix file filename for query strings.
 	preg_match( '/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $url, $matches );
 	// Extract filename from url for title.
-	$url_filename = basename( $matches[ 0 ] );
+	$url_filename = basename( $matches[0] );
 	// Determine file type (ext and mime/type).
 	$url_type = wp_check_filetype( $url_filename );
 
@@ -216,7 +216,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 		// Extract path parts.
 		$tmppath = pathinfo( $tmp );
 		// Build new path.
-		$new = $tmppath[ 'dirname' ] . '/' . $filename . '.' . $tmppath[ 'extension' ];
+		$new = $tmppath['dirname'] . '/' . $filename . '.' . $tmppath['extension'];
 		// Renames temp file on server.
 		rename( $tmp, $new );
 		// Push new filename (in path) to be used in file array later.
@@ -226,14 +226,14 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	/* Assemble file data (should be built like $_FILES since wp_handle_sideload() will be using). */
 
 	// Full server path to temp file.
-	$file_array[ 'tmp_name' ] = $tmp;
+	$file_array['tmp_name'] = $tmp;
 
 	if ( ! empty( $filename ) ) {
 		// User given filename for title, add original URL extension.
-		$file_array[ 'name' ] = $filename . '.' . $url_type[ 'ext' ];
+		$file_array['name'] = $filename . '.' . $url_type['ext'];
 	} else {
 		// Just use original URL filename.
-		$file_array[ 'name' ] = $url_filename;
+		$file_array['name'] = $url_filename;
 	}
 
 	$post_data = array(
@@ -255,7 +255,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// If error storing permanently, unlink.
 	if ( is_wp_error( $att_id ) ) {
 		// Clean up.
-		@unlink( $file_array[ 'tmp_name' ] );
+		@unlink( $file_array['tmp_name'] );
 
 		// And output wp_error.
 		return $att_id;
@@ -272,11 +272,11 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
  * @since 1.0.5
  */
 function wds_get_youtube_details( $youtube_id ) {
-	$remote_headers                 = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
-	$is_404                         = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
-	$video[ 'video_thumbnail_url' ] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
-	$video[ 'video_url' ]           = 'https://www.youtube.com/watch?v=' . $youtube_id;
-	$video[ 'video_embed_url' ]     = 'https://www.youtube.com/embed/' . $youtube_id;
+	$remote_headers               = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
+	$is_404                       = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
+	$video['video_thumbnail_url'] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
+	$video['video_url']           = 'https://www.youtube.com/watch?v=' . $youtube_id;
+	$video['video_embed_url']     = 'https://www.youtube.com/embed/' . $youtube_id;
 
 	return $video;
 }
@@ -290,10 +290,10 @@ function wds_get_youtube_details( $youtube_id ) {
  */
 function wds_get_vimeo_details( $vimeo_id ) {
 	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
-	if ( isset( $vimeo_data[ 'response' ][ 'code' ] ) && '200' == $vimeo_data[ 'response' ][ 'code' ] ) {
-		$response                       = unserialize( $vimeo_data[ 'body' ] );
-		$video[ 'video_thumbnail_url' ] = isset( $response[ 0 ][ 'thumbnail_large' ] ) ? $response[ 0 ][ 'thumbnail_large' ] : false;
-		$video[ 'video_url' ]           = 'https://vimeo.com/' . $vimeo_id;
+	if ( isset( $vimeo_data['response']['code'] ) && '200' == $vimeo_data['response']['code'] ) {
+		$response                     = unserialize( $vimeo_data['body'] );
+		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
+		$video['video_url']           = 'https://vimeo.com/' . $vimeo_id;
 	}
 
 	return $video;
