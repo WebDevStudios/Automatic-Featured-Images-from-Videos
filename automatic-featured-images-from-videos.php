@@ -23,6 +23,9 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// Include the file that handles meta boxes.
+require( 'includes/meta-boxes.php' );
+
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
 
 /**

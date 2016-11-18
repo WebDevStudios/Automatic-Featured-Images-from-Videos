@@ -9,6 +9,7 @@
  * @author  Gary Kovar
  */
 
+die
 add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
 
 /**
