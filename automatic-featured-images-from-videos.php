@@ -295,7 +295,7 @@ function wds_get_vimeo_details( $vimeo_id ) {
 		$response                     = unserialize( $vimeo_data['body'] );
 		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
 		$video['video_url']           = 'https://vimeo.com/' . $vimeo_id;
-		$video['video_embed_url']     = 'player.vimeo.com/video/' . $vimeo_id;
+		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
 	}
 
 	return $video;
