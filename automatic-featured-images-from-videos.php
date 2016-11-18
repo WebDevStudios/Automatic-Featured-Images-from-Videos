@@ -23,9 +23,7 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
-
 
 /**
  * This function name is no longer accurate but it may be in use so we will leave it.
@@ -75,9 +73,9 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 
 	if ( $vimeo_id ) {
 		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
-		$video_thumbnail_url = $vimeo_details[ 'video_thumbnail_url' ];
-		$video_url           = $vimeo_details[ 'video_url' ];
-		$video_embed_url     = $vimeo_details[ 'video_url' ];
+		$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
+		$video_url           = $vimeo_details['video_url'];
+		$video_embed_url     = $vimeo_details['video_url'];
 	}
 
 	if ( $post_id
