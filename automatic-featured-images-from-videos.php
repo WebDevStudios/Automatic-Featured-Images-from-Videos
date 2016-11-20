@@ -364,7 +364,7 @@ function wds_customize_post_buttons() {
 	$type_array = array( 'post', 'page' );
 
 	if ( in_array( $post_type, $type_array ) ) {
-		if ( ! wp_next_scheduled('wds_bulk_process_video_query_init', array($post_type)) ) {
+		if ( ! wp_next_scheduled( 'wds_bulk_process_video_query_init', array( $post_type ) ) ) {
 			?>
 			<script>
 				jQuery( function () {
@@ -380,7 +380,7 @@ function wds_customize_post_buttons() {
 					} );
 				} );
 			</script>
-			<?php } else { ?>
+		<?php } else { ?>
 			<script>
 				jQuery( function () {
 					jQuery( "body.post-type-<?php echo $post_type; ?> .wrap h1" ).append( '<a class="page-title-action bulk-add-video-status">Processing...</a>' );
@@ -401,6 +401,10 @@ function wds_customize_post_buttons() {
 add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
 add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
 function wds_queue_bulk_processing() {
+	$type_array = array( 'post', 'page' );
+	if ( ! in_array( $_POST['posttype'], $type_array ) ) {
+		return;
+	}
 	wp_schedule_single_event( time() + 60, 'wds_bulk_process_video_query_init', array( $_POST['posttype'] ) );
 }
 
