@@ -349,3 +349,32 @@ function wds_get_embeddable_video_url( $post_id ) {
 		return get_post_meta( $post_id, '_video_embed_url', true );
 	}
 }
+
+/**
+ * Add a bulk-process button.
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.2.0
+ */
+add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
+function wds_customize_post_buttons() {
+	global $post_type;
+
+	$type_array = array( 'post', 'page' );
+
+	if ( in_array( $post_type, $type_array ) ) {
+		// @TODO This can be display conditionally based on if an action is running or not.
+
+		?>
+		<script>
+			jQuery(function(){
+				jQuery("body.post-type-<?php echo $post_type; ?> .wrap h1").append('<a href="#" class="page-title-action bulk-add-video">Bulk add Video Thumbnails</a>');
+				jQuery(".bulk-add-video").click(function(){
+					jQuery(".bulk-add-video").hide();
+				});
+			});
+		</script>
+		<?php
+	}
+}
