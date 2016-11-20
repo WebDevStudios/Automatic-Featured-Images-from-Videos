@@ -373,6 +373,11 @@ function wds_customize_post_buttons() {
 				jQuery(".bulk-add-video").click(function(){
 					jQuery(".bulk-add-video").hide();
 					jQuery("body.post-type-<?php echo $post_type; ?> .wrap h1").append('<a class="page-title-action bulk-add-video-status">Processing...</a>');
+					jQuery.ajax({
+						type: "POST",
+						url: ajaxurl,
+						data: { action: 'wds_queue_bulk_processing' , posttype: '<?php echo $post_type; ?>' }
+					});
 				});
 			});
 		</script>
@@ -381,6 +386,30 @@ function wds_customize_post_buttons() {
 }
 
 /**
+ * Admin-ajax kickoff the bulk processing.
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.2.0
+ */
+add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
+add_action( 'wds_bulk_process_video_query_init', 'wdswds_bulk_process_video_query_init' );
+function wds_queue_bulk_processing() {
+	wp_schedule_single_event( time() + 60, 'wds_bulk_process_video_query_init', array( $_POST['posttype'] ) );
+}
+
+/**
+ * Process the scheduled post-type.
+ *
+ * @author Gary Kovar
+ *
+ * @since 1.2.0
+ */
+function wds_bulk_process_video_query( $post_type ) {
+	
+}
+
+/**
  * When clicked: wp_schedule_single_event()
  * In the hooked function, have logic at the end to schedule event again.
- *
+ */
