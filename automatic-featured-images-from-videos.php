@@ -68,16 +68,16 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 
 	if ( $youtube_id ) {
 		$youtube_details     = wds_get_youtube_details( $youtube_id );
-		$video_thumbnail_url = $youtube_details[ 'video_thumbnail_url' ];
-		$video_url           = $youtube_details[ 'video_url' ];
-		$video_embed_url     = $youtube_details[ 'video_embed_url' ];
+		$video_thumbnail_url = $youtube_details['video_thumbnail_url'];
+		$video_url           = $youtube_details['video_url'];
+		$video_embed_url     = $youtube_details['video_embed_url'];
 	}
 
 	if ( $vimeo_id ) {
 		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
-		$video_thumbnail_url = $vimeo_details[ 'video_thumbnail_url' ];
-		$video_url           = $vimeo_details[ 'video_url' ];
-		$video_embed_url     = $vimeo_details[ 'video_url' ];
+		$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
+		$video_url           = $vimeo_details['video_url'];
+		$video_embed_url     = $vimeo_details['video_url'];
 	}
 
 	if ( $post_id
@@ -145,7 +145,7 @@ function wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url ) {
  */
 function wds_check_for_youtube( $content ) {
 	if ( preg_match( '/\/\/(www\.)?(youtu|youtube)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)/', $content, $youtube_matches ) ) {
-		return $youtube_matches[ 6 ];
+		return $youtube_matches[6];
 	}
 
 	return false;
@@ -165,7 +165,7 @@ function wds_check_for_youtube( $content ) {
  */
 function wds_check_for_vimeo( $content ) {
 	if ( preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ) {
-		$id = preg_replace( "/[^0-9]/", "", $vimeo_matches[ 0 ] );
+		$id = preg_replace( "/[^0-9]/", "", $vimeo_matches[0] );
 
 		return substr( $id, 0, 8 );
 	}
@@ -198,8 +198,8 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// If error storing temporarily, unlink.
 	if ( is_wp_error( $tmp ) ) {
 		// Clean up.
-		@unlink( $file_array[ 'tmp_name' ] );
-		$file_array[ 'tmp_name' ] = '';
+		@unlink( $file_array['tmp_name'] );
+		$file_array['tmp_name'] = '';
 
 		// And output wp_error.
 		return $tmp;
@@ -208,7 +208,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// Fix file filename for query strings.
 	preg_match( '/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $url, $matches );
 	// Extract filename from url for title.
-	$url_filename = basename( $matches[ 0 ] );
+	$url_filename = basename( $matches[0] );
 	// Determine file type (ext and mime/type).
 	$url_type = wp_check_filetype( $url_filename );
 
@@ -218,7 +218,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 		// Extract path parts.
 		$tmppath = pathinfo( $tmp );
 		// Build new path.
-		$new = $tmppath[ 'dirname' ] . '/' . $filename . '.' . $tmppath[ 'extension' ];
+		$new = $tmppath['dirname'] . '/' . $filename . '.' . $tmppath['extension'];
 		// Renames temp file on server.
 		rename( $tmp, $new );
 		// Push new filename (in path) to be used in file array later.
@@ -228,14 +228,14 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	/* Assemble file data (should be built like $_FILES since wp_handle_sideload() will be using). */
 
 	// Full server path to temp file.
-	$file_array[ 'tmp_name' ] = $tmp;
+	$file_array['tmp_name'] = $tmp;
 
 	if ( ! empty( $filename ) ) {
 		// User given filename for title, add original URL extension.
-		$file_array[ 'name' ] = $filename . '.' . $url_type[ 'ext' ];
+		$file_array['name'] = $filename . '.' . $url_type['ext'];
 	} else {
 		// Just use original URL filename.
-		$file_array[ 'name' ] = $url_filename;
+		$file_array['name'] = $url_filename;
 	}
 
 	$post_data = array(
@@ -257,7 +257,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	// If error storing permanently, unlink.
 	if ( is_wp_error( $att_id ) ) {
 		// Clean up.
-		@unlink( $file_array[ 'tmp_name' ] );
+		@unlink( $file_array['tmp_name'] );
 
 		// And output wp_error.
 		return $att_id;
@@ -274,11 +274,11 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
  * @since 1.0.5
  */
 function wds_get_youtube_details( $youtube_id ) {
-	$remote_headers                 = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
-	$is_404                         = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
-	$video[ 'video_thumbnail_url' ] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
-	$video[ 'video_url' ]           = 'https://www.youtube.com/watch?v=' . $youtube_id;
-	$video[ 'video_embed_url' ]     = 'https://www.youtube.com/embed/' . $youtube_id;
+	$remote_headers               = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
+	$is_404                       = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
+	$video['video_thumbnail_url'] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
+	$video['video_url']           = 'https://www.youtube.com/watch?v=' . $youtube_id;
+	$video['video_embed_url']     = 'https://www.youtube.com/embed/' . $youtube_id;
 
 	return $video;
 }
@@ -292,10 +292,10 @@ function wds_get_youtube_details( $youtube_id ) {
  */
 function wds_get_vimeo_details( $vimeo_id ) {
 	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
-	if ( isset( $vimeo_data[ 'response' ][ 'code' ] ) && '200' == $vimeo_data[ 'response' ][ 'code' ] ) {
-		$response                       = unserialize( $vimeo_data[ 'body' ] );
-		$video[ 'video_thumbnail_url' ] = isset( $response[ 0 ][ 'thumbnail_large' ] ) ? $response[ 0 ][ 'thumbnail_large' ] : false;
-		$video[ 'video_url' ]           = 'https://vimeo.com/' . $vimeo_id;
+	if ( isset( $vimeo_data['response']['code'] ) && '200' == $vimeo_data['response']['code'] ) {
+		$response                     = unserialize( $vimeo_data['body'] );
+		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
+		$video['video_url']           = 'https://vimeo.com/' . $vimeo_id;
 	}
 
 	return $video;
@@ -355,7 +355,7 @@ function wds_get_embeddable_video_url( $post_id ) {
  *
  * @author Gary Kovar
  *
- * @since 1.2.0
+ * @since  1.2.0
  */
 add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
 function wds_customize_post_buttons() {
@@ -368,18 +368,18 @@ function wds_customize_post_buttons() {
 
 		?>
 		<script>
-			jQuery(function(){
-				jQuery("body.post-type-<?php echo $post_type; ?> .wrap h1").append('<a href="#" class="page-title-action bulk-add-video">Bulk add Video Thumbnails</a>');
-				jQuery(".bulk-add-video").click(function(){
-					jQuery(".bulk-add-video").hide();
-					jQuery("body.post-type-<?php echo $post_type; ?> .wrap h1").append('<a class="page-title-action bulk-add-video-status">Processing...</a>');
-					jQuery.ajax({
+			jQuery( function () {
+				jQuery( "body.post-type-<?php echo $post_type; ?> .wrap h1" ).append( '<a href="#" class="page-title-action bulk-add-video">Bulk add Video Thumbnails</a>' );
+				jQuery( ".bulk-add-video" ).click( function () {
+					jQuery( ".bulk-add-video" ).hide();
+					jQuery( "body.post-type-<?php echo $post_type; ?> .wrap h1" ).append( '<a class="page-title-action bulk-add-video-status">Processing...</a>' );
+					jQuery.ajax( {
 						type: "POST",
-						url: ajaxurl,
-						data: { action: 'wds_queue_bulk_processing' , posttype: '<?php echo $post_type; ?>' }
-					});
-				});
-			});
+						url:  ajaxurl,
+						data: { action: 'wds_queue_bulk_processing', posttype: '<?php echo $post_type; ?>' }
+					} );
+				} );
+			} );
 		</script>
 		<?php
 	}
@@ -390,10 +390,10 @@ function wds_customize_post_buttons() {
  *
  * @author Gary Kovar
  *
- * @since 1.2.0
+ * @since  1.2.0
  */
 add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
-add_action( 'wds_bulk_process_video_query_init', 'wdswds_bulk_process_video_query_init' );
+add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
 function wds_queue_bulk_processing() {
 	wp_schedule_single_event( time() + 60, 'wds_bulk_process_video_query_init', array( $_POST['posttype'] ) );
 }
@@ -403,10 +403,26 @@ function wds_queue_bulk_processing() {
  *
  * @author Gary Kovar
  *
- * @since 1.2.0
+ * @since  1.2.0
  */
 function wds_bulk_process_video_query( $post_type ) {
-	
+	// Get a list of IDs to process.
+	$args  = array(
+		'post_type'      => $post_type,
+		'meta_query'     => array(
+			array(
+				'meta_key'     => '_is_video',
+				'meta_compare' => 'NOT EXISTS',
+			),
+		),
+		'posts_per_page' => 50,
+		'fields'         => 'ids',
+	);
+	$query = new WP_Query( $args );
+	error_log( print_r( $query, 1 ) );
+
+	// wds_check_if_content_contains_video($post_id,$post);
+	// If there are more to process, then reschedule.  Otherwise, have a beer.
 }
 
 /**
