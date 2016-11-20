@@ -364,7 +364,7 @@ function wds_customize_post_buttons() {
 	$type_array = array( 'post', 'page' );
 
 	if ( in_array( $post_type, $type_array ) ) {
-		if ( ! wp_next_scheduled('wds_bulk_process_video_query_init') ) {
+		if ( ! wp_next_scheduled('wds_bulk_process_video_query_init', array($post_type)) ) {
 			?>
 			<script>
 				jQuery( function () {
