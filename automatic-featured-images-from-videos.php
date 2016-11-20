@@ -364,7 +364,7 @@ function wds_customize_post_buttons() {
 	$type_array = array( 'post', 'page' );
 
 	if ( in_array( $post_type, $type_array ) ) {
-		// @TODO This can be display conditionally based on if an action is running or not.
+		// @TODO This can all be displayed conditionally based on if an action is running or not.
 
 		?>
 		<script>
@@ -372,6 +372,7 @@ function wds_customize_post_buttons() {
 				jQuery("body.post-type-<?php echo $post_type; ?> .wrap h1").append('<a href="#" class="page-title-action bulk-add-video">Bulk add Video Thumbnails</a>');
 				jQuery(".bulk-add-video").click(function(){
 					jQuery(".bulk-add-video").hide();
+					jQuery("body.post-type-<?php echo $post_type; ?> .wrap h1").append('<a class="page-title-action bulk-add-video-status">Processing...</a>');
 				});
 			});
 		</script>
