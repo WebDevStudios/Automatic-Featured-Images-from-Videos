@@ -400,6 +400,7 @@ function wds_queue_bulk_processing() {
 
 /**
  * Process the scheduled post-type.
+ * If there are more to do when it's done...do it.
  *
  * @author Gary Kovar
  *
@@ -415,17 +416,18 @@ function wds_bulk_process_video_query( $post_type ) {
 				'meta_compare' => 'NOT EXISTS',
 			),
 		),
-		'posts_per_page' => 50,
+		'posts_per_page' => 10,
 		'fields'         => 'ids',
 	);
 	$query = new WP_Query( $args );
-	error_log( print_r( $query, 1 ) );
 
-	// wds_check_if_content_contains_video($post_id,$post);
-	// If there are more to process, then reschedule.  Otherwise, have a beer.
+	// Process these jokers.
+	foreach ( $query->posts as $post_id ) {
+		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
+	}
+
+	$reschedule_task = new WP_Query( $args );
+	if ( $reschedule_task->post_count > 1 ) {
+		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', array( $post_type ) );
+	}
 }
-
-/**
- * When clicked: wp_schedule_single_event()
- * In the hooked function, have logic at the end to schedule event again.
- */
