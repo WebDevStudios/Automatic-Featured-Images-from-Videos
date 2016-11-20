@@ -379,3 +379,8 @@ function wds_customize_post_buttons() {
 		<?php
 	}
 }
+
+/**
+ * When clicked: wp_schedule_single_event()
+ * In the hooked function, have logic at the end to schedule event again.
+ *
