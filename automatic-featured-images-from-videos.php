@@ -85,7 +85,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	     && ( $youtube_id || $vimeo_id )
 	) {
 		if ( ! wp_is_post_revision( $post_id ) ) {
-			wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url );
+			wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url );
 		}
 	}
 
@@ -111,7 +111,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
  *
  * @param string $video_thumbnail_url URL of the image thumbnail.
  */
-function wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url ) {
+function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url ) {
 
 	// If we found an image...
 	$attachment_id = $video_thumbnail_url && ! is_wp_error( $video_thumbnail_url )
