@@ -30,6 +30,7 @@ add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' 
 add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
 
 include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
+include ( plugin_dir_path( __FILE__ ) . 'includes/bulk-operations.php' );
 
 /**
  * This function name is no longer accurate but it may be in use so we will leave it.
