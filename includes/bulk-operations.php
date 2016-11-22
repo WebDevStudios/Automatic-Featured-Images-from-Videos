@@ -38,7 +38,7 @@ function wds_bulk_process_video_query( $post_type ) {
 
 	$post_count = 10;
 
-	$posts_to_process = apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity' $post_count);
+	$posts_to_process = apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity', $post_count);
 
 	// Get a list of IDs to process.
 	$args  = array(
