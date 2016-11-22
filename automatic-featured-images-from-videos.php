@@ -361,8 +361,8 @@ function wds_register_display_video_metabox() {
 
 	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
 		add_meta_box(
-			'wds_display_video_metabox',
-			__( 'Video File found in Content', 'wds-automatic-featured-images-from-video' ),
+			'wds_display_video_urls_metabox',
+			__( 'Video Files found in Content', 'wds-automatic-featured-images-from-video' ),
 			'wds_video_thumbnail_meta'
 		);
 	}
@@ -375,5 +375,8 @@ function wds_register_display_video_metabox() {
  */
 function wds_video_thumbnail_meta() {
 	global $post;
-	echo '<iframe src="' . wds_get_embeddable_video_url($post->ID) . '"></iframe>';
+	echo '<h3>Video URL</h3>';
+	echo wds_get_video_url($post->ID);
+	echo '<h3>Video Embed URL</h3>';
+	echo wds_get_embeddable_video_url($post->ID);
 }
