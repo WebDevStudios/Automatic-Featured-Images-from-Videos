@@ -25,6 +25,11 @@ License: GPLv2
 
 add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
+add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
+add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
+add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
+
+include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
 
 /**
  * This function name is no longer accurate but it may be in use so we will leave it.
@@ -351,97 +356,6 @@ function wds_get_embeddable_video_url( $post_id ) {
 }
 
 /**
- * Add a bulk-process button.
- *
- * @author Gary Kovar
- *
- * @since  1.2.0
- */
-function wds_customize_post_buttons() {
-	global $post_type;
-
-	$type_array = array( 'post', 'page' );
-
-	if ( in_array( $post_type, $type_array ) ) {
-		if ( ! wp_next_scheduled( 'wds_bulk_process_video_query_init', array( $post_type ) ) ) {
-			?>
-			<script>
-				jQuery( function () {
-					jQuery( "body.post-type-<?php echo $post_type; ?> .wrap h1" ).append( '<a href="#" class="page-title-action bulk-add-video">Bulk add Video Thumbnails</a>' );
-					jQuery( ".bulk-add-video" ).click( function () {
-						jQuery( ".bulk-add-video" ).hide();
-						jQuery( "body.post-type-<?php echo $post_type; ?> .wrap h1" ).append( '<a class="page-title-action bulk-add-video-status">Processing...</a>' );
-						jQuery.ajax( {
-							type: "POST",
-							url:  ajaxurl,
-							data: { action: 'wds_queue_bulk_processing', posttype: '<?php echo $post_type; ?>' }
-						} );
-					} );
-				} );
-			</script>
-		<?php } else { ?>
-			<script>
-				jQuery( function () {
-					jQuery( "body.post-type-<?php echo $post_type; ?> .wrap h1" ).append( '<a class="page-title-action bulk-add-video-status">Processing...</a>' );
-				} );
-			</script>
-			<?php
-		}
-	}
-}
-add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
-
-/**
- * Admin-ajax kickoff the bulk processing.
- *
- * @author Gary Kovar
- *
- * @since  1.2.0
- */
-function wds_queue_bulk_processing() {
-	$type_array = array( 'post', 'page' );
-	if ( ! in_array( $_POST['posttype'], $type_array ) ) {
-		return;
-	}
-	wp_schedule_single_event( time() + 60, 'wds_bulk_process_video_query_init', array( $_POST['posttype'] ) );
-}
-
-/**
- * Process the scheduled post-type.
- *
- * If there are more to do when it's done...do it.
- *
- * @author Gary Kovar
- *
- * @since  1.2.0
- */
-function wds_bulk_process_video_query( $post_type ) {
-	// Get a list of IDs to process.
-	$args  = array(
-		'post_type'      => $post_type,
-		'meta_query'     => array(
-			array(
-				'meta_key'     => '_is_video',
-				'meta_compare' => 'NOT EXISTS',
-			),
-		),
-		'posts_per_page' => 10,
-		'fields'         => 'ids',
-	);
-	$query = new WP_Query( $args );
-
-	// Process these jokers.
-	foreach ( $query->posts as $post_id ) {
-		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
-	}
-
-	$reschedule_task = new WP_Query( $args );
-	if ( $reschedule_task->post_count > 1 ) {
-		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', array( $post_type ) );
-	}
-}
-
-/**
  * Register a metabox to display the video on post edit view.
  * @author Gary Kovar
  * @since 1.1.0
@@ -465,10 +379,9 @@ function wds_register_display_video_metabox() {
  */
 function wds_video_thumbnail_meta() {
 	global $post;
+
 	echo '<h3>Video URL</h3>';
 	echo wds_get_video_url($post->ID);
 	echo '<h3>Video Embed URL</h3>';
 	echo wds_get_embeddable_video_url($post->ID);
 }
-add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
-add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
