@@ -35,6 +35,11 @@ function wds_queue_bulk_processing() {
  * @since  1.2.0
  */
 function wds_bulk_process_video_query( $post_type ) {
+
+	$post_count = 10;
+
+	$posts_to_process = apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity' $post_count);
+
 	// Get a list of IDs to process.
 	$args  = array(
 		'post_type'      => $post_type,
@@ -44,7 +49,7 @@ function wds_bulk_process_video_query( $post_type ) {
 				'meta_compare' => 'NOT EXISTS',
 			),
 		),
-		'posts_per_page' => 10,
+		'posts_per_page' => $posts_to_process,
 		'fields'         => 'ids',
 	);
 	$query = new WP_Query( $args );
