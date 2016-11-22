@@ -357,7 +357,6 @@ function wds_get_embeddable_video_url( $post_id ) {
  *
  * @since  1.2.0
  */
-add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
 function wds_customize_post_buttons() {
 	global $post_type;
 
@@ -390,6 +389,7 @@ function wds_customize_post_buttons() {
 		}
 	}
 }
+add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
 
 /**
  * Admin-ajax kickoff the bulk processing.
@@ -398,8 +398,6 @@ function wds_customize_post_buttons() {
  *
  * @since  1.2.0
  */
-add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
-add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
 function wds_queue_bulk_processing() {
 	$type_array = array( 'post', 'page' );
 	if ( ! in_array( $_POST['posttype'], $type_array ) ) {
@@ -410,6 +408,7 @@ function wds_queue_bulk_processing() {
 
 /**
  * Process the scheduled post-type.
+ *
  * If there are more to do when it's done...do it.
  *
  * @author Gary Kovar
@@ -471,3 +470,5 @@ function wds_video_thumbnail_meta() {
 	echo '<h3>Video Embed URL</h3>';
 	echo wds_get_embeddable_video_url($post->ID);
 }
+add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
+add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
