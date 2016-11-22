@@ -3,7 +3,7 @@
 Plugin Name: Automatic Featured Images from YouTube / Vimeo
 Plugin URI: http://webdevstudios.com
 Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that video's thumbnail.
-Version: 1.0.5
+Version: 1.1.0
 Author: WebDevStudios
 Author URI: http://webdevstudios.com
 License: GPLv2
@@ -23,9 +23,8 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
+add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
-
 
 /**
  * This function name is no longer accurate but it may be in use so we will leave it.
@@ -77,7 +76,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
 		$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
 		$video_url           = $vimeo_details['video_url'];
-		$video_embed_url     = $vimeo_details['video_url'];
+		$video_embed_url     = $vimeo_details['video_embed_url'];
 	}
 
 	if ( $post_id
@@ -86,7 +85,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	     && ( $youtube_id || $vimeo_id )
 	) {
 		if ( ! wp_is_post_revision( $post_id ) ) {
-			wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url );
+			wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url );
 		}
 	}
 
@@ -112,7 +111,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
  *
  * @param string $video_thumbnail_url URL of the image thumbnail.
  */
-function wds_set_video_thumbnail_as_featured_image( $video_thumbnail_url ) {
+function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url ) {
 
 	// If we found an image...
 	$attachment_id = $video_thumbnail_url && ! is_wp_error( $video_thumbnail_url )
@@ -165,7 +164,7 @@ function wds_check_for_youtube( $content ) {
  */
 function wds_check_for_vimeo( $content ) {
 	if ( preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ) {
-		$id = preg_replace( "/[^0-9]/", "", $vimeo_matches[0] );
+		$id = preg_replace( "/[^0-9]/", '', $vimeo_matches[0] );
 
 		return substr( $id, 0, 8 );
 	}
@@ -296,6 +295,7 @@ function wds_get_vimeo_details( $vimeo_id ) {
 		$response                     = unserialize( $vimeo_data['body'] );
 		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
 		$video['video_url']           = 'https://vimeo.com/' . $vimeo_id;
+		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
 	}
 
 	return $video;
@@ -440,4 +440,34 @@ function wds_bulk_process_video_query( $post_type ) {
 	if ( $reschedule_task->post_count > 1 ) {
 		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', array( $post_type ) );
 	}
+}
+
+/**
+ * Register a metabox to display the video on post edit view.
+ * @author Gary Kovar
+ * @since 1.1.0
+ */
+function wds_register_display_video_metabox() {
+	global $post;
+
+	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
+		add_meta_box(
+			'wds_display_video_urls_metabox',
+			__( 'Video Files found in Content', 'wds-automatic-featured-images-from-video' ),
+			'wds_video_thumbnail_meta'
+		);
+	}
+}
+
+/**
+ * Populate the metabox.
+ * @author Gary Kovar
+ * @since 1.1.0
+ */
+function wds_video_thumbnail_meta() {
+	global $post;
+	echo '<h3>Video URL</h3>';
+	echo wds_get_video_url($post->ID);
+	echo '<h3>Video Embed URL</h3>';
+	echo wds_get_embeddable_video_url($post->ID);
 }
