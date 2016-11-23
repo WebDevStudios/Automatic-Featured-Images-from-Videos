@@ -40,8 +40,9 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 == Changelog ==
 
 = 1.1.0 =
-* Added a metabox that displays the video found.
-* Fixed the way the vimeo embed URL is returned.
+* Added: Metabox that displays the found video URL and embed URL.
+* Added: Pass post ID for the `wds_check_if_content_contains_video` filter.
+* Fixed: Modified the way the vimeo embed URL is returned.
 
 = 1.0.5 =
 * Added function wds_get_video_url when passed a post_id returns a video URL.
