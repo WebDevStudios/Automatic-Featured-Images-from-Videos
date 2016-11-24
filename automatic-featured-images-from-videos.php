@@ -59,7 +59,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$content = substr( $content, 0, 800 );
 
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
-	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post->ID );
+	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post_id );
 
 	// Set the video id.
 	$youtube_id = wds_check_for_youtube( $content );
