@@ -11,7 +11,7 @@
  *
  * @author Gary Kovar
  *
- * @since  1.2.0
+ * @since  1.1.0
  */
 function wds_queue_bulk_processing() {
 	$type_array = array( 'post', 'page' );
@@ -32,7 +32,7 @@ function wds_queue_bulk_processing() {
  *
  * @author Gary Kovar
  *
- * @since  1.2.0
+ * @since  1.1.0
  */
 function wds_bulk_process_video_query( $post_type ) {
 

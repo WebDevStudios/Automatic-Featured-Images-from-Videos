@@ -11,7 +11,7 @@
  *
  * @author Gary Kovar
  *
- * @since  1.2.0
+ * @since  1.1.0
  */
 function wds_customize_post_buttons() {
 	global $post_type;
