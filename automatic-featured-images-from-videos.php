@@ -36,7 +36,10 @@ add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
 add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
 
 // Slip in the jquery to append the button for bulk processing.
-add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
+add_action( 'wp', 'wds_customize_post_buttons' );
+
+// Register the script we might use.
+wp_register_script( 'wds_featured_images_from_video_script', plugin_dir_url( __FILE__ ) . 'js/button.js' );
 
 include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
 include ( plugin_dir_path( __FILE__ ) . 'includes/bulk-operations.php' );

@@ -2,6 +2,8 @@
  * Created by garykovar on 11/21/16.
  */
 
+console.log('hello');
+
 	jQuery( function () {
 		jQuery( "body.post-type-<?php echo $post_type; ?> .wrap h1" ).append( '<a href="#" class="page-title-action bulk-add-video">Bulk add Video Thumbnails</a>' );
 		jQuery( ".bulk-add-video" ).click( function () {
