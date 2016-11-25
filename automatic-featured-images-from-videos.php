@@ -23,10 +23,19 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
+// Check on save if content contains video.
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
+
+// Add a meta box to the post types we are checking for video on.
+add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
+
+// Create an endpoint that receives the params to start bulk processing.
 add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
+
+// Handle scheduled bulk request.
 add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
+
+// Slip in the jquery to append the button for bulk processing.
 add_action( 'admin_footer-edit.php', 'wds_customize_post_buttons' );
 
 include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );

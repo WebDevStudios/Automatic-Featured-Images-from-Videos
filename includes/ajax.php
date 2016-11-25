@@ -16,10 +16,8 @@
 function wds_customize_post_buttons() {
 	global $post_type;
 
-	$type_array = array( 'post', 'page' );
-
 	// Allow developers to pass in custom CPTs to process.
-	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', $type_array );
+	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', array( 'post', 'page' ) );
 
 	if ( in_array( $post_type, $type_array ) ) {
 
