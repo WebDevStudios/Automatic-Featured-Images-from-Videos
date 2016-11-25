@@ -38,6 +38,8 @@ add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' 
 // Slip in the jquery to append the button for bulk processing.
 add_action( 'admin_enqueue_scripts', 'wds_customize_post_buttons' );
 
+$wds_automatic_featured_image_from_video_plugin_url = plugin_dir_url( __FILE__ );
+
 include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
 include ( plugin_dir_path( __FILE__ ) . 'includes/bulk-operations.php' );
 

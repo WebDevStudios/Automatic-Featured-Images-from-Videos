@@ -57,6 +57,7 @@ function wds_bulk_process_video_query( $post_type ) {
 	// Process these jokers.
 	foreach ( $query->posts as $post_id ) {
 		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
+		error_log('processed ' . $post_id);
 	}
 
 	$reschedule_task = new WP_Query( $args );

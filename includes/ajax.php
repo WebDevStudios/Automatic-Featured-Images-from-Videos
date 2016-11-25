@@ -14,8 +14,11 @@
  * @since  1.1.0
  */
 function wds_customize_post_buttons() {
+
+	global $wds_automatic_featured_image_from_video_plugin_url;
+
 	// Register the script we might use.
-	wp_register_script( 'wds_featured_images_from_video_script', plugin_dir_url( __FILE__ ) . 'js/button.js' );
+	wp_register_script( 'wds_featured_images_from_video_script', $wds_automatic_featured_image_from_video_plugin_url . 'js/button.js' );
 
 	global $post_type;
 
