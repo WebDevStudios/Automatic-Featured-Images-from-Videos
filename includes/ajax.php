@@ -20,7 +20,6 @@ function wds_customize_post_buttons() {
 	// Allow developers to pass in custom CPTs to process.
 	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', $type_array );
 
-
 	if ( in_array( $post_type, $type_array ) ) {
 
 		$args = array(
@@ -32,4 +31,36 @@ function wds_customize_post_buttons() {
 		wp_enqueue_script( 'wds_featured_images_from_video_script' );
 
 	}
+}
+
+/**
+ *
+ */
+function wds_featured_images_from_video_processing_status( $post_type ) {
+
+	// Check if the bulk task has already been scheduled.
+	if ( wp_next_scheduled( 'wds_bulk_process_video_query_init', array( $post_type ) ) ) {
+		return 'running';
+	}
+
+	// Check if we have any to process.
+	// This is not very DRY as it is the same query as in bulk-ops function.
+	$args  = array(
+		'post_type'      => $post_type,
+		'meta_query'     => array(
+			array(
+				'meta_key'     => '_is_video',
+				'meta_compare' => 'NOT EXISTS',
+			),
+		),
+		'posts_per_page' => apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity', 10 ),
+		'fields'         => 'ids',
+	);
+	$query = new WP_Query( $args );
+	if ( $query->post_count > 1 ) {
+		return 'ready_to_process';
+	}
+
+	return 'do_not_process';
+
 }
