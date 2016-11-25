@@ -63,3 +63,10 @@ function wds_bulk_process_video_query( $post_type ) {
 		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', array( $post_type ) );
 	}
 }
+
+/**
+ *
+ */
+function wds_featured_images_from_video_processing_status( $post_type ) {
+
+}

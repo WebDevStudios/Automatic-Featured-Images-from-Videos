@@ -21,7 +21,16 @@ function wds_customize_post_buttons() {
 
 	if ( in_array( $post_type, $type_array ) ) {
 
-		// Should EQ the js file here.
+		$status =
+
+		$args = array(
+			'post_type' => $post_type,
+			'status'    => wds_featured_images_from_video_processing_status( $post_type ),
+		);
+
+		wp_register_script( 'wds_featured_images_from_video_script', plugin_dir_path( __FILE__ ) . 'js/button.js' );
+		wp_localize_script( 'wds_featured_images_from_video_script', 'args', $translation_array );
+		wp_enqueue_script( 'wds_featured_images_from_video_script' );
 
 		if ( ! wp_next_scheduled( 'wds_bulk_process_video_query_init', array( $post_type ) ) ) {
 			?>
