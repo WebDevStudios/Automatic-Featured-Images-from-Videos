@@ -44,20 +44,18 @@ function wds_bulk_process_video_query( $post_type ) {
 		'post_type'      => $post_type,
 		'meta_query'     => array(
 			array(
-				'meta_key'     => '_is_video',
-				'meta_compare' => 'NOT EXISTS',
+				'key'     => '_is_video',
+				'compare' => 'NOT EXISTS',
 			),
 		),
 		'posts_per_page' => $posts_to_process,
 		'fields'         => 'ids',
 	);
 	$query = new WP_Query( $args );
-	error_log(print_r($query,1));
 
 	// Process these jokers.
 	foreach ( $query->posts as $post_id ) {
 		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
-		error_log('processed ' . $post_id);
 	}
 
 	$reschedule_task = new WP_Query( $args );

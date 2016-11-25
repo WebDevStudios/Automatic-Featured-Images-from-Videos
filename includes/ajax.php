@@ -40,7 +40,7 @@ function wds_customize_post_buttons() {
 }
 
 /**
- *
+ * Return a status on what to do about the button.
  */
 function wds_featured_images_from_video_processing_status( $post_type ) {
 
@@ -55,8 +55,8 @@ function wds_featured_images_from_video_processing_status( $post_type ) {
 		'post_type'      => $post_type,
 		'meta_query'     => array(
 			array(
-				'meta_key'     => '_is_video',
-				'meta_compare' => 'NOT EXISTS',
+				'key'     => '_is_video',
+				'compare' => 'NOT EXISTS',
 			),
 		),
 		'posts_per_page' => apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity', 10 ),
