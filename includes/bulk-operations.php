@@ -52,6 +52,7 @@ function wds_bulk_process_video_query( $post_type ) {
 		'fields'         => 'ids',
 	);
 	$query = new WP_Query( $args );
+	error_log(print_r($query,1));
 
 	// Process these jokers.
 	foreach ( $query->posts as $post_id ) {

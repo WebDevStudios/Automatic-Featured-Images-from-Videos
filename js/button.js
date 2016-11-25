@@ -2,6 +2,8 @@
  * Created by garykovar on 11/21/16.
  */
 
+console.log('hello');
+
 jQuery( document ).ready(function(){
 
 	if ('running' == wds_featured_image_from_vid_args.status ) {
