@@ -32,7 +32,10 @@ function wds_video_thumnbail_cli( $args, $assoc_args ) {
 	$query = wds_automatic_featured_images_from_videos_wp_query( $post_type, -1 );
 
 	// Process these jokers.
+	$progress = \WP_CLI\Utils\make_progress_bar( 'Processing post type: ' . $post_type , $query->post_count );
 	foreach ( $query->posts as $post_id ) {
 		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
+		$progress->tick();
 	}
+	$progress->finish();
 }
