@@ -395,10 +395,10 @@ function wds_register_display_video_metabox() {
 function wds_video_thumbnail_meta() {
 	global $post;
 
-	echo '<h3>Video URL</h3>';
+	echo '<h3>' . esc_html__( 'Video URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
 	echo wds_get_video_url($post->ID);
-	echo '<h3>Video Embed URL</h3>';
-	echo wds_get_embeddable_video_url($post->ID);
+	echo '<h3>' . esc_html__( 'Video Embed URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
+	echo wds_get_embeddable_video_url( $post->ID );
 }
 
 /**
