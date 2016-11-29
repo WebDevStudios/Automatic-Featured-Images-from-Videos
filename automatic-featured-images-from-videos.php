@@ -23,8 +23,28 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
+// Check on save if content contains video.
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
+
+// Add a meta box to the post types we are checking for video on.
+add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
+
+// Create an endpoint that receives the params to start bulk processing.
+add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
+
+// Handle scheduled bulk request.
+add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' );
+
+// Slip in the jquery to append the button for bulk processing.
+add_action( 'admin_enqueue_scripts', 'wds_customize_post_buttons' );
+
+$wds_automatic_featured_image_from_video_plugin_url = plugin_dir_url( __FILE__ );
+
+include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
+include ( plugin_dir_path( __FILE__ ) . 'includes/bulk-operations.php' );
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	include( plugin_dir_path( __FILE__ ) . 'includes/cli.php' );
+}
 
 /**
  * This function name is no longer accurate but it may be in use so we will leave it.
@@ -67,9 +87,9 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 
 	if ( $youtube_id ) {
 		$youtube_details     = wds_get_youtube_details( $youtube_id );
-		$video_thumbnail_url = $youtube_details[ 'video_thumbnail_url' ];
-		$video_url           = $youtube_details[ 'video_url' ];
-		$video_embed_url     = $youtube_details[ 'video_embed_url' ];
+		$video_thumbnail_url = $youtube_details['video_thumbnail_url'];
+		$video_url           = $youtube_details['video_url'];
+		$video_embed_url     = $youtube_details['video_embed_url'];
 	}
 
 	if ( $vimeo_id ) {
@@ -227,14 +247,14 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	/* Assemble file data (should be built like $_FILES since wp_handle_sideload() will be using). */
 
 	// Full server path to temp file.
-	$file_array[ 'tmp_name' ] = $tmp;
+	$file_array['tmp_name'] = $tmp;
 
 	if ( ! empty( $filename ) ) {
 		// User given filename for title, add original URL extension.
-		$file_array[ 'name' ] = $filename . '.' . $url_type[ 'ext' ];
+		$file_array['name'] = $filename . '.' . $url_type['ext'];
 	} else {
 		// Just use original URL filename.
-		$file_array[ 'name' ] = $url_filename;
+		$file_array['name'] = $url_filename;
 	}
 
 	$post_data = array(
@@ -374,8 +394,28 @@ function wds_register_display_video_metabox() {
  */
 function wds_video_thumbnail_meta() {
 	global $post;
-	echo '<h3>Video URL</h3>';
+
+	echo '<h3>' . esc_html__( 'Video URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
 	echo wds_get_video_url($post->ID);
-	echo '<h3>Video Embed URL</h3>';
-	echo wds_get_embeddable_video_url($post->ID);
+	echo '<h3>' . esc_html__( 'Video Embed URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
+	echo wds_get_embeddable_video_url( $post->ID );
+}
+
+/**
+ * Run a WP Query.
+ * @since 1.1.0
+ */
+function wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_per_page ) {
+	$args  = array(
+		'post_type'      => $post_type,
+		'meta_query'     => array(
+			array(
+				'key'     => '_is_video',
+				'compare' => 'NOT EXISTS',
+			),
+		),
+		'posts_per_page' => $posts_per_page,
+		'fields'         => 'ids',
+	);
+	return new WP_Query( $args );
 }
