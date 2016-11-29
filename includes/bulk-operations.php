@@ -47,7 +47,7 @@ function wds_bulk_process_video_query( $post_type ) {
 		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
 	}
 
-	$reschedule_task = new WP_Query( $args );
+	$reschedule_task = wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_to_process );
 	if ( $reschedule_task->post_count > 1 ) {
 		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', array( $post_type ) );
 	}
