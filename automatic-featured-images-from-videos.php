@@ -397,3 +397,22 @@ function wds_video_thumbnail_meta() {
 	echo '<h3>Video Embed URL</h3>';
 	echo wds_get_embeddable_video_url($post->ID);
 }
+
+/**
+ * Run a WP Query.
+ * @since 1.1.0
+ */
+function wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_per_page ) {
+	$args  = array(
+		'post_type'      => $post_type,
+		'meta_query'     => array(
+			array(
+				'key'     => '_is_video',
+				'compare' => 'NOT EXISTS',
+			),
+		),
+		'posts_per_page' => $posts_per_page,
+		'fields'         => 'ids',
+	);
+	return new WP_Query( $args );
+}

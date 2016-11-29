@@ -39,19 +39,8 @@ function wds_bulk_process_video_query( $post_type ) {
 
 	$posts_to_process = apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity', $post_count );
 
-	// Get a list of IDs to process.
-	$args  = array(
-		'post_type'      => $post_type,
-		'meta_query'     => array(
-			array(
-				'key'     => '_is_video',
-				'compare' => 'NOT EXISTS',
-			),
-		),
-		'posts_per_page' => $posts_to_process,
-		'fields'         => 'ids',
-	);
-	$query = new WP_Query( $args );
+	// Check if we have any to process.
+	$query = wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_to_process );
 
 	// Process these jokers.
 	foreach ( $query->posts as $post_id ) {
