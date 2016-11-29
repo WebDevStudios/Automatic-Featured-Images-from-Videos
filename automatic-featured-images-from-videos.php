@@ -42,6 +42,9 @@ $wds_automatic_featured_image_from_video_plugin_url = plugin_dir_url( __FILE__ )
 
 include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
 include ( plugin_dir_path( __FILE__ ) . 'includes/bulk-operations.php' );
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	include( plugin_dir_path( __FILE__ ) . 'includes/cli.php' );
+}
 
 /**
  * This function name is no longer accurate but it may be in use so we will leave it.
