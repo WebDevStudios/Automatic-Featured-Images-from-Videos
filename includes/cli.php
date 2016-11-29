@@ -18,7 +18,7 @@ WP_CLI::add_command( 'video-thumbnail', 'wds_video_thumnbail_cli' );
  *
  * ## EXAMPLES
  *
- *     wp video-thumbnail --post-type=post
+ *     wp video-thumbnail page
  *
  * @when after_wp_load
  */
@@ -26,7 +26,7 @@ function wds_video_thumnbail_cli( $args, $assoc_args ) {
 	if ( isset( $args[0] ) ) {
 		$post_type = $args[0];
 	} else {
-		WP_CLI::error( 'post type must be set', true );
+		$post_type = 'post';
 	}
 
 	$query = wds_automatic_featured_images_from_videos_wp_query( $post_type, -1 );
