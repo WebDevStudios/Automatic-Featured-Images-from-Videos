@@ -1,6 +1,6 @@
 # Automatic Featured Images from Videos #
 
-Contributors: [bradparbs](https://github.com/bradp), [coreymcollins](https://github.com/coreymcollins), [jtsternberg](https://github.com/jtsternberg), [webdevstudios](https://github.com/webdevstudios), [binarygary](https://github.com/binarygaryfi)   
+Contributors: [bradparbs](https://github.com/bradp), [coreymcollins](https://github.com/coreymcollins), [jtsternberg](https://github.com/jtsternberg), [webdevstudios](https://github.com/webdevstudios), [binarygary](https://github.com/binarygaryfi)
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 3.7
@@ -38,8 +38,10 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 ## Changelog ##
 
 ### 1.1.0 ###
-* Added a metabox that displays the video found.
-* Fixed the way the vimeo embed URL is returned.
+* Added: Metabox that displays the found video URL and embed URL.
+* Added: Pass post ID for the `wds_check_if_content_contains_video` filter.
+* Added: Bulk processing of posts for those missing thumbnails from videos.
+* Fixed: Modified the way the vimeo embed URL is returned.
 
 ### 1.0.5 ###
 * Added function wds_get_video_url when passed a post_id returns a video URL.
@@ -49,7 +51,7 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 * Refactored the default save_post entry function to handle logic better.
 
 ### 1.0.4 ###
-* Store the full video url in post meta _video_url. 
+* Store the full video url in post meta _video_url.
 * Refactored checks for video ID.
 
 ### 1.0.3 ###
