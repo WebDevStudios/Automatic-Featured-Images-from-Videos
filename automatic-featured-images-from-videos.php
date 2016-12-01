@@ -93,10 +93,17 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	}
 
 	if ( $vimeo_id ) {
+
+		error_log( 'Vimeo URL found in post ID: ' . $post_id );
+
 		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
-		$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
-		$video_url           = $vimeo_details['video_url'];
-		$video_embed_url     = $vimeo_details['video_embed_url'];
+		if ( $vimeo_details['status'] ) {
+			$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
+			$video_url           = $vimeo_details['video_url'];
+			$video_embed_url     = $vimeo_details['video_embed_url'];
+		} else {
+			$vimeo_id = null;
+		}
 	}
 
 	if ( $post_id
@@ -311,11 +318,18 @@ function wds_get_youtube_details( $youtube_id ) {
  */
 function wds_get_vimeo_details( $vimeo_id ) {
 	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
+
+	// Assume the video is 404/301 unless proven otherwise.
+	$video['status'] = false;
+	error_log( 'Vimeo Response Status: ' . $vimeo_data['response']['code'] );
+	error_log( print_r( $vimeo_data['header'], 1 ) );
+
 	if ( isset( $vimeo_data['response']['code'] ) && '200' == $vimeo_data['response']['code'] ) {
 		$response                     = unserialize( $vimeo_data['body'] );
 		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
 		$video['video_url']           = 'https://vimeo.com/' . $vimeo_id;
 		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
+		$video['status']              = true;
 	}
 
 	return $video;
@@ -396,7 +410,7 @@ function wds_video_thumbnail_meta() {
 	global $post;
 
 	echo '<h3>' . esc_html__( 'Video URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
-	echo wds_get_video_url($post->ID);
+	echo wds_get_video_url( $post->ID );
 	echo '<h3>' . esc_html__( 'Video Embed URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
 	echo wds_get_embeddable_video_url( $post->ID );
 }
