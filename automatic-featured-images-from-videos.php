@@ -321,19 +321,20 @@ function wds_get_youtube_details( $youtube_id ) {
 function wds_get_vimeo_details( $vimeo_id ) {
 	$video['status'] = false;
 
+	$vimeo_data = wp_remote_get( 'http://vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
+
 	// If we get an error, don't bother.
-	if ( is_wp_error( $vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' ) ) ){
+	if ( is_wp_error( $vimeo_data ) ){
 		return $video;
 	}
 
+	// If it's a successful pull from vimeo populate the params in the array.
 	if ( isset( $vimeo_data['response']['code'] ) && '200' == $vimeo_data['response']['code'] ) {
 		$response                     = unserialize( $vimeo_data['body'] );
 		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
 		$video['video_url']           = 'https://vimeo.com/' . $vimeo_id;
 		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
 		$video['status']              = true;
-	} else {
-		error_log( print_r( $vimeo_data, 1 ) );
 	}
 
 	return $video;
