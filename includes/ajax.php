@@ -35,7 +35,7 @@ function wds_customize_post_buttons() {
 		$args = array(
 			'post_type'       => $post_type,
 			'status'          => wds_featured_images_from_video_processing_status( $post_type ),
-			'processing_text' => __( 'Processing...', 'wds_automatic_featured_images_from_videos' ),
+			'processing_text' => wds_featured_images_from_video_processing_current_disposition(),
 			'bulk_text'       => __( 'Bulk add Video Thumbnails', 'wds_automatic_featured_images_from_videos' ),
 		);
 
@@ -64,4 +64,13 @@ function wds_featured_images_from_video_processing_status( $post_type ) {
 
 	return 'do_not_process';
 
+}
+
+/**
+ * Return actual processing for specific post.
+ *
+ * @return string|void
+ */
+function wds_featured_images_from_video_processing_current_disposition() {
+	return __( 'Processing...', 'wds_automatic_featured_images_from_videos' );
 }
