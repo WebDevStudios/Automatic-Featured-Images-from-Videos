@@ -24,7 +24,12 @@ function wds_customize_post_buttons() {
 
 	$type_array = array( 'post', 'page' );
 	// Allow developers to pass in custom CPTs to process.
-	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', $type_array );
+	$user_type_array = apply_filters( 'wds_featured_images_from_video_post_types', $type_array );
+
+	// Let's not implicitly trust an array is incoming.  If not, fall back to post/page.
+	if ( is_array( $user_type_array ) ) {
+		$type_array = $user_type_array;
+	}
 
 	if ( in_array( $post_type, $type_array ) ) {
 		$args = array(
