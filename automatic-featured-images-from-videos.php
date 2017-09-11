@@ -129,25 +129,28 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
  *
  * @since 1.0.0
  *
+ * @param int    $post_id             ID of the post being saved.
  * @param string $video_thumbnail_url URL of the image thumbnail.
  */
 function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url ) {
 
-	// If we found an image...
-	$attachment_id = $video_thumbnail_url && ! is_wp_error( $video_thumbnail_url )
-		// Then sideload it.
-		? wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title() ) ) )
-		// No thumbnail url found.
-		: 0;
-
-	// If attachment wasn't created, bail.
-	if ( ! $attachment_id ) {
+	// Bail if no valid video thumbnail URL.
+	if ( ! $video_thumbnail_url || is_wp_error( $video_thumbnail_url ) ) {
 		return;
 	}
 
-	// Woot! we got an image, so set it as the post thumbnail.
-	set_post_thumbnail( $post_id, $attachment_id );
+	$post_title = sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title() ) );
 
+	// Try to sideload the image.
+	$attachment_id = wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, $post_title );
+
+	// Bail if unable to sideload (happens if the URL or post ID is invalid, or if the URL 404s).
+	if ( is_wp_error( $attachment_id ) ) {
+		return;
+	}
+
+	// Woot! We got an image, so set it as the post thumbnail.
+	set_post_thumbnail( $post_id, $attachment_id );
 }
 
 /**
