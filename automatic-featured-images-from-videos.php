@@ -186,10 +186,8 @@ function wds_check_for_youtube( $content ) {
  *
  */
 function wds_check_for_vimeo( $content ) {
-	if ( preg_match( '#https?://(.+\.)?vimeo\.com/.*#i', $content, $vimeo_matches ) ) {
-		$id = preg_replace( "/[^0-9]/", '', $vimeo_matches[0] );
-
-		return substr( $id, 0, 8 );
+	if ( preg_match( '#\/\/(.+\.)?(vimeo\.com)\/(\d*)#', $content, $vimeo_matches ) ) {
+		return $vimeo_matches[3];
 	}
 
 	return false;
