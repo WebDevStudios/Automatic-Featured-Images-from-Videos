@@ -42,6 +42,11 @@ function wds_customize_post_buttons() {
 
 /**
  * Return a status on what to do about the button.
+ *
+ * @since 1.1.0
+ *
+ * @param string $post_type Post type to check process for.
+ * @return string
  */
 function wds_featured_images_from_video_processing_status( $post_type ) {
 

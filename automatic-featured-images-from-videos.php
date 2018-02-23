@@ -52,6 +52,9 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  * @author     Gary Kovar
  *
  * @deprecated 1.0.5
+ *
+ * @param int     $post_id Post ID.
+ * @param WP_Post $post    Post object.
  */
 function wds_set_media_as_featured_image( $post_id, $post ) {
 	wds_check_if_content_contains_video( $post_id, $post );
@@ -286,12 +289,15 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	return $att_id;
 }
 
-/*
+/**
  * Get the image thumbnail and the video url from a youtube id.
  *
  * @author Gary Kovar
  *
  * @since 1.0.5
+ *
+ * @param string $youtube_id Youtube video ID.
+ * @return array Video data.
  */
 function wds_get_youtube_details( $youtube_id ) {
 	$remote_headers               = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
@@ -303,12 +309,15 @@ function wds_get_youtube_details( $youtube_id ) {
 	return $video;
 }
 
-/*
+/**
  * Get the image thumbnail and the video url from a vimeo id.
  *
  * @author Gary Kovar
  *
  * @since 1.0.5
+ *
+ * @param string $vimeo_id Vimeo video ID.
+ * @return array Video information.
  */
 function wds_get_vimeo_details( $vimeo_id ) {
 	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
@@ -322,12 +331,15 @@ function wds_get_vimeo_details( $vimeo_id ) {
 	return $video;
 }
 
-/*
+/**
  * Check if the post is a video.
  *
  * @author Gary Kovar
  *
  * @since 1.0.5
+ *
+ * @param int $post_id WP post ID to check for video on.
+ * @return bool
  */
 function wds_post_has_video( $post_id ) {
 	if ( ! metadata_exists( 'post', $post_id, '_is_video' ) ) {
@@ -337,12 +349,15 @@ function wds_post_has_video( $post_id ) {
 	return get_post_meta( $post_id, '_is_video', true );
 }
 
-/*
+/**
  * Get the URL for the video.
  *
  * @author Gary Kovar
  *
  * @since 1.0.5
+ *
+ * @param int $post_id Post ID to get video url for.
+ * @return string
  */
 function wds_get_video_url( $post_id ) {
 	if ( wds_post_has_video( $post_id ) ) {
@@ -354,12 +369,15 @@ function wds_get_video_url( $post_id ) {
 	}
 }
 
-/*
+/**
  * Get the embeddable URL
  *
  * @author Gary Kovar
  *
  * @since 1.0.5
+ *
+ * @param int $post_id Post ID to grab video for.
+ * @return string
  */
 function wds_get_embeddable_video_url( $post_id ) {
 	if ( wds_post_has_video( $post_id ) ) {
@@ -404,7 +422,12 @@ function wds_video_thumbnail_meta() {
 
 /**
  * Run a WP Query.
+ *
  * @since 1.1.0
+ *
+ * @param string $post_type      Post type to query for.
+ * @param int    $posts_per_page Posts per page to query for.
+ * @return WP_Query WP_Query object
  */
 function wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_per_page ) {
 	$args  = array(

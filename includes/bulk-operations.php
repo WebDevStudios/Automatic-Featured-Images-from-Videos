@@ -32,6 +32,8 @@ function wds_queue_bulk_processing() {
  * @author Gary Kovar
  *
  * @since  1.1.0
+ *
+ * @param string $post_type Post type to process.
  */
 function wds_bulk_process_video_query( $post_type ) {
 
