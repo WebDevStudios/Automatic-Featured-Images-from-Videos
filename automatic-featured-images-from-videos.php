@@ -266,10 +266,6 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 
 	// If error storing temporarily, unlink.
 	if ( is_wp_error( $tmp ) ) {
-		// Clean up.
-		@unlink( $file_array['tmp_name'] );
-		$file_array['tmp_name'] = '';
-
 		// And output wp_error.
 		return $tmp;
 	}
