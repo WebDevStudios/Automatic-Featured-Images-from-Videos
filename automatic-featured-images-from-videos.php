@@ -94,8 +94,9 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post_id );
 
 	// Set the video id.
-	$youtube_id = wds_check_for_youtube( $content );
-	$vimeo_id   = wds_check_for_vimeo( $content );
+	$youtube_id          = wds_check_for_youtube( $content );
+	$vimeo_id            = wds_check_for_vimeo( $content );
+	$video_thumbnail_url = '';
 
 	if ( $youtube_id ) {
 		$youtube_details     = wds_get_youtube_details( $youtube_id );
@@ -309,6 +310,9 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
  * @return array Video data.
  */
 function wds_get_youtube_details( $youtube_id ) {
+	$video = array();
+
+	// @todo Get this matching up with wds_get_vimeo_details for validity.
 	$remote_headers               = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
 	$is_404                       = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
 	$video['video_thumbnail_url'] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
@@ -329,6 +333,9 @@ function wds_get_youtube_details( $youtube_id ) {
  * @return array Video information.
  */
 function wds_get_vimeo_details( $vimeo_id ) {
+	$video = array();
+
+	// @todo Get remote checking matching with wds_get_youtube_details.
 	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
 	if ( isset( $vimeo_data['response']['code'] ) && '200' == $vimeo_data['response']['code'] ) {
 		$response                     = unserialize( $vimeo_data['body'] );
@@ -376,6 +383,7 @@ function wds_get_video_url( $post_id ) {
 
 		return get_post_meta( $post_id, '_video_url', true );
 	}
+	return '';
 }
 
 /**
@@ -396,6 +404,7 @@ function wds_get_embeddable_video_url( $post_id ) {
 
 		return get_post_meta( $post_id, '_video_embed_url', true );
 	}
+	return '';
 }
 
 /**
