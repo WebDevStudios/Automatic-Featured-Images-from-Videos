@@ -89,6 +89,12 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 		return;
 	}
 
+	// We need to prevent trying to assign when trashing or untrashing posts in the list screen.
+	// get_current_screen() was not providing a unique enough value to use here.
+	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'trash', 'untrash' ) )  ) {
+		return;
+	}
+
 	$content = isset( $post->post_content ) ? $post->post_content : '';
 
 	/**
