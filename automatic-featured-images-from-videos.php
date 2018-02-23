@@ -1,13 +1,16 @@
 <?php
 /*
-Plugin Name: Automatic Featured Images from YouTube / Vimeo
-Plugin URI: http://webdevstudios.com
-Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that video's thumbnail.
-Version: 1.1.0
-Author: WebDevStudios
-Author URI: http://webdevstudios.com
-License: GPLv2
+ * Plugin Name: Automatic Featured Images from YouTube / Vimeo
+ * Plugin URI: http://webdevstudios.com
+ * Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that video's thumbnail.
+ * Version: 1.1.0
+ * Author: WebDevStudios
+ * Author URI: http://webdevstudios.com
+ * License: GPLv2
+ * Text Domain: automatic-featured-images-fromimages-videos
+ */
 
+/*
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation; either version 2 of the License, or
