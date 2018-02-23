@@ -70,7 +70,7 @@ function wds_load_afi() {
  */
 function wds_set_media_as_featured_image( $post_id, $post ) {
 	wds_check_if_content_contains_video( $post_id, $post );
-	_doing_it_wrong( 'wds_set_media_as_feature_image', 'This function has been replaced with wds_check_if_content_contains_video', '4.6' );
+	_doing_it_wrong( 'wds_set_media_as_feature_image', esc_html( 'This function has been replaced with wds_check_if_content_contains_video', 'automatic-featured-images-fromimages-videos' ), '4.6' );
 }
 
 /**
@@ -223,7 +223,7 @@ function wds_check_for_vimeo( $content ) {
 function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null ) {
 
 	if ( ! $url || ! $post_id ) {
-		return new WP_Error( 'missing', __( 'Need a valid URL and post ID...', 'automatic-featured-images-from-videos' ) );
+		return new WP_Error( 'missing', esc_html__( 'Need a valid URL and post ID...', 'automatic-featured-images-fromimages-videos' ) );
 	}
 
 	require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -421,7 +421,7 @@ function wds_register_display_video_metabox() {
 	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
 		add_meta_box(
 			'wds_display_video_urls_metabox',
-			__( 'Video Files found in Content', 'wds-automatic-featured-images-from-video' ),
+			esc_html__( 'Video Files found in Content', 'wds-automatic-featured-images-from-video' ),
 			'wds_video_thumbnail_meta'
 		);
 	}
