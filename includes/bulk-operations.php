@@ -15,7 +15,13 @@
  */
 function wds_queue_bulk_processing() {
 
-	// Allow developers to pass in custom CPTs to process.
+	/**
+	 * Allow developers to pass in custom post types to process.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param array $value Array of post types to process.
+	 */
 	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', array( 'post', 'page' ) );
 
 	if ( ! in_array( $_POST['posttype'], $type_array ) ) {
