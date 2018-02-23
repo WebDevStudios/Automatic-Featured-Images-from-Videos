@@ -347,10 +347,10 @@ function wds_get_vimeo_details( $vimeo_id ) {
 
 	// @todo Get remote checking matching with wds_get_youtube_details.
 	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
-	if ( isset( $vimeo_data['response']['code'] ) && '200' == $vimeo_data['response']['code'] ) {
+	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
 		$response                     = unserialize( $vimeo_data['body'] );
 		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
-		$video['video_url']           = 'https://vimeo.com/' . $vimeo_id;
+		$video['video_url']           = $response[0]['url'];
 		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
 	}
 
