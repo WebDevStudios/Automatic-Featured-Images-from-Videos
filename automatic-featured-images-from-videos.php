@@ -26,6 +26,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// Used for js loading elsewhere.
+define( 'WDSAFI_DIR', plugin_dir_url( __FILE__ ) );
+
 add_action( 'plugins_loaded', 'wds_load_afi' );
 
 // Check on save if content contains video.
