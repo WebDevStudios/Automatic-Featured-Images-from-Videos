@@ -136,8 +136,15 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	     && $content
 	     && ( $youtube_id || $vimeo_id )
 	) {
+		$video_id = '';
+		if ( $youtube_id ) {
+			$video_id = $youtube_id;
+		}
+		if ( $vimeo_id ) {
+			$video_id = $vimeo_id;
+		}
 		if ( ! wp_is_post_revision( $post_id ) ) {
-			wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url );
+			wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id );
 		}
 	}
 
@@ -163,8 +170,9 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
  *
  * @param int    $post_id             ID of the post being saved.
  * @param string $video_thumbnail_url URL of the image thumbnail.
+ * @param string $video_id            Video ID from embed.
  */
-function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url ) {
+function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id = '' ) {
 
 	// Bail if no valid video thumbnail URL.
 	if ( ! $video_thumbnail_url || is_wp_error( $video_thumbnail_url ) ) {
@@ -233,10 +241,11 @@ function wds_check_for_vimeo( $content ) {
  * @param string      $url      URL to sideload.
  * @param int         $post_id  Post ID to attach to.
  * @param string|null $filename Filename to use.
+ * @param string      $video_id Video ID.
  *
  * @return mixed
  */
-function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null ) {
+function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null, $video_id ) {
 
 	if ( ! $url || ! $post_id ) {
 		return new WP_Error( 'missing', esc_html__( 'Need a valid URL and post ID...', 'automatic-featured-images-fromimages-videos' ) );
