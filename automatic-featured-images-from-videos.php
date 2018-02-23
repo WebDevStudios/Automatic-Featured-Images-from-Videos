@@ -23,6 +23,8 @@ License: GPLv2
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+add_action( 'plugins_loaded', 'wds_load_afi' );
+
 // Check on save if content contains video.
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
 
@@ -38,12 +40,19 @@ add_action( 'wds_bulk_process_video_query_init', 'wds_bulk_process_video_query' 
 // Slip in the jquery to append the button for bulk processing.
 add_action( 'admin_enqueue_scripts', 'wds_customize_post_buttons' );
 
-$wds_automatic_featured_image_from_video_plugin_url = plugin_dir_url( __FILE__ );
-
-include ( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
-include ( plugin_dir_path( __FILE__ ) . 'includes/bulk-operations.php' );
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	include( plugin_dir_path( __FILE__ ) . 'includes/cli.php' );
+/**
+ * Load....automatically...LOL.
+ *
+ * I need tacos. Send help.
+ *
+ * @since 1.1.0
+ */
+function wds_load_afi() {
+	require_once( plugin_dir_path( __FILE__ ) . 'includes/ajax.php' );
+	require_once( plugin_dir_path( __FILE__ ) . 'includes/bulk-operations.php' );
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		require_once( plugin_dir_path( __FILE__ ) . 'includes/cli.php' );
+	}
 }
 
 /**
