@@ -13,7 +13,7 @@ If a YouTube or Vimeo video exists in the first portion of a post, automatically
 
 == Description ==
 
-When placing a YouTube or Vimeo video within the first 1000 characters of a post, the thumbnail of that video will automatically be sideloaded and set as the featured image for the post as long as the post does not already have a featured image set.
+When placing a YouTube or Vimeo video within the first 800 characters of a post, the thumbnail of that video will automatically be sideloaded and set as the featured image for the post as long as the post does not already have a featured image set.
 
 In addition, after setting the video thumbnail as the featured image, an “is_video” post meta field is updated to allow for the use of conditional statements within your loop.
 
