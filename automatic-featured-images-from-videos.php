@@ -181,8 +181,16 @@ function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_u
 
 	$post_title = sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title() ) );
 
-	// Try to sideload the image.
-	$attachment_id = wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, $post_title );
+	global $wpdb;
+
+	$stmt = $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type = '%s' AND guid LIKE '%$video_id%' ", 'attachment' );
+	$attachment = $wpdb->get_col( $stmt );
+	if ( !empty( $attachment[0] ) ) {
+		$attachment_id = $attachment[0];
+	} else {
+		// Try to sideload the image.
+		$attachment_id = wds_ms_media_sideload_image_with_new_filename( $video_thumbnail_url, $post_id, $post_title, $video_id );
+	}
 
 	// Bail if unable to sideload (happens if the URL or post ID is invalid, or if the URL 404s).
 	if ( is_wp_error( $attachment_id ) ) {
