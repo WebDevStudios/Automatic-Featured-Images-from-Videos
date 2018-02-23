@@ -90,8 +90,15 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	}
 
 	$content = isset( $post->post_content ) ? $post->post_content : '';
-	// Only check the first 800 characters of our post.
-	$content = substr( $content, 0, 800 );
+
+	/**
+	 * Only check the first 800 characters of our post, by default.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $value Character limit to search.
+	 */
+	$content = substr( $content, 0, apply_filters( 'wds_featured_images_character_limit', 800 ) );
 
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post_id );
