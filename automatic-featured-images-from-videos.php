@@ -349,12 +349,13 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 function wds_get_youtube_details( $youtube_id ) {
 	$video = array();
 
-	// @todo Get this matching up with wds_get_vimeo_details for validity.
-	$remote_headers               = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
-	$is_404                       = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) );
-	$video['video_thumbnail_url'] = ( ! $is_404 ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
-	$video['video_url']           = 'https://www.youtube.com/watch?v=' . $youtube_id;
-	$video['video_embed_url']     = 'https://www.youtube.com/embed/' . $youtube_id;
+	$video                        = wp_remote_head( 'https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $youtube_id );
+	if ( 200 === wp_remote_retrieve_response_code( $video ) ) {
+		$remote_headers               = wp_remote_head( 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' );
+		$video['video_thumbnail_url'] = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) ) ? 'http://img.youtube.com/vi/' . $youtube_id . '/maxresdefault.jpg' : 'http://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
+		$video['video_url']           = 'https://www.youtube.com/watch?v=' . $youtube_id;
+		$video['video_embed_url']     = 'https://www.youtube.com/embed/' . $youtube_id;
+	}
 
 	return $video;
 }
