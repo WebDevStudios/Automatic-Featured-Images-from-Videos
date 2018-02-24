@@ -134,7 +134,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	if ( $post_id
 	     && ! has_post_thumbnail( $post_id )
 	     && $content
-	     && ( $youtube_id || $vimeo_id )
+	     && ( $youtube_details || $vimeo_details )
 	) {
 		$video_id = '';
 		if ( $youtube_id ) {
