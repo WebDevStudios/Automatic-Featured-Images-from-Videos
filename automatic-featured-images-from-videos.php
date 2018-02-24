@@ -183,7 +183,12 @@ function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_u
 
 	global $wpdb;
 
-	$stmt = $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type = '%s' AND guid LIKE '%$video_id%' ", 'attachment' );
+	$stmt = "SELECT ID FROM {$wpdb->posts}";
+	$stmt .= $wpdb->prepare(
+		' WHERE post_type = %s AND guid LIKE %s',
+        'attachment',
+	    '%' . $wpdb->esc_like( $video_id ) . '%'
+    );
 	$attachment = $wpdb->get_col( $stmt );
 	if ( !empty( $attachment[0] ) ) {
 		$attachment_id = $attachment[0];
