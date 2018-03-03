@@ -156,6 +156,8 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 		update_post_meta( $post_id, '_video_url', $video_url );
 		update_post_meta( $post_id, '_video_embed_url', $video_embed_url );
 	} else {
+		// Need to set because we don't have one, and we can skip on future iterations.
+		// Need way to potentially force check ALL.
 		update_post_meta( $post_id, '_is_video', false );
 		delete_post_meta( $post_id, '_video_url' );
 		delete_post_meta( $post_id, '_video_embed_url' );
