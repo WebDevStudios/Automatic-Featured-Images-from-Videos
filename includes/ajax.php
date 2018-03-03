@@ -20,15 +20,14 @@ function wds_customize_post_buttons() {
 
 	global $post_type;
 
-	$type_array = array( 'post', 'page' );
 	// Allow developers to pass in custom CPTs to process.
-	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', $type_array );
+	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', array( 'post', 'page' ) );
 
-	if ( in_array( $post_type, $type_array ) ) {
+	if ( is_array( $type_array ) && in_array( $post_type, $type_array ) ) {
 		$args = array(
 			'post_type'       => $post_type,
 			'status'          => wds_featured_images_from_video_processing_status( $post_type ),
-			'processing_text' => esc_html__( 'Processing...', 'wds_automatic_featured_images_from_videos' ),
+			'processing_text' => wds_featured_images_from_video_processing_current_disposition(),
 			'bulk_text'       => esc_html__( 'Bulk add video thumbnails', 'wds_automatic_featured_images_from_videos' ),
 		);
 
@@ -62,4 +61,13 @@ function wds_featured_images_from_video_processing_status( $post_type ) {
 
 	return 'do_not_process';
 
+}
+
+/**
+ * Return actual processing for specific post.
+ *
+ * @return string|void
+ */
+function wds_featured_images_from_video_processing_current_disposition() {
+	return esc_html__( 'Processing...', 'wds_automatic_featured_images_from_videos' );
 }
