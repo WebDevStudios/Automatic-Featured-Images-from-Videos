@@ -5,7 +5,7 @@ Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 3.7
 Tested up to: 4.9.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,9 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 ## Screenshots ##
 
 ## Changelog ##
+
+### 1.1.1 ###
+* Fixed: Extra forward slash in YouTube URLs that was causing 404 errors when trying to add to media library.
 
 ### 1.1.0 ###
 * Added: Metabox that displays the found video URL and embed URL. Values saved as post meta.
