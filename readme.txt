@@ -4,7 +4,7 @@ Contributors: bradparbs, coreymcollins, jtsternberg, webdevstudios, pluginize, b
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 3.7
-Tested up to: 4.7
+Tested up to: 4.9.4
 Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,10 +40,13 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 == Changelog ==
 
 = 1.1.0 =
-* Added: Metabox that displays the found video URL and embed URL.
+* Added: Metabox that displays the found video URL and embed URL. Values saved as post meta.
 * Added: Pass post ID for the `wds_check_if_content_contains_video` filter.
-* Added: Bulk processing of posts for those missing thumbnails from videos.
+* Added: Filters that allow customization by developers to alter default values.
+* Added: BETA: Bulk processing of posts for those missing thumbnails from videos. Please report issues found.
+* Added: BETA: WP-CLI support.
 * Fixed: Modified the way the vimeo embed URL is returned.
+* Fixed: Prevent multiple instances of same found image from being uploaded to media library.
 
 = 1.0.5 =
 * Added function wds_get_video_url when passed a post_id returns a video URL.
