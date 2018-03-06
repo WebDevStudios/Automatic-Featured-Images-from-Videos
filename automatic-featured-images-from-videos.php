@@ -358,19 +358,19 @@ function wds_get_youtube_details( $youtube_id ) {
 			sprintf(
 				$video_thumbnail_url_string,
 				$youtube_id,
-				'/maxresdefault.jpg'
+				'maxresdefault.jpg'
 			)
 		);
 		$video['video_thumbnail_url'] = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) ) ?
 			sprintf(
 				$video_thumbnail_url_string,
 				$youtube_id,
-				'/hqdefault.jpg'
+				'hqdefault.jpg'
 			) :
 			sprintf(
 				$video_thumbnail_url_string,
 				$youtube_id,
-				'/maxresdefault.jpg'
+				'maxresdefault.jpg'
 			);
 		$video['video_url']           = 'https://www.youtube.com/watch?v=' . $youtube_id;
 		$video['video_embed_url']     = 'https://www.youtube.com/embed/' . $youtube_id;
