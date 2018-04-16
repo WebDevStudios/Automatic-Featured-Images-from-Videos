@@ -221,7 +221,7 @@ function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_u
  *
  */
 function wds_check_for_youtube( $content ) {
-	if ( preg_match( '#\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)#', $content, $youtube_matches ) ) {
+	if ( preg_match( '#\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(?!.*user)(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)#', $content, $youtube_matches ) ) {
 		return $youtube_matches[6];
 	}
 
