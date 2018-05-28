@@ -17,7 +17,7 @@ class Provider_Bootstrap {
 		 * Allow developers to pass in custom video providers.
 		 * Video providers should extend the Video_Provider class.
 		 *
-		 * @since 1.1.1
+		 * @since 1.1.2
 		 *
 		 * @param Video_Provider $value An object that is of a class that extends Video_Provider.
 		 */
