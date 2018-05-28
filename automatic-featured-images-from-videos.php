@@ -121,15 +121,19 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$providers->add_provider( new Vimeo() );
 
 	$has_video = false;
-	foreach( $providers->video_providers() as $video_provider ) {
+	foreach ( $providers->video_providers() as $video_provider ) {
+		if ( ! is_a( $video_provider, Video_Provider::class ) ) {
+			return new WP_Error( __( 'The passed provider is not a Provider Object', 'automatic-featured-images-from-videos' ) );
+		}
+
 		if ( $video_provider->match_content( $content ) ) {
-			$has_video         = true;
+			$has_video           = true;
 			$video_thumbnail_url = $video_provider->get_video_thumbnail_url();
 			$video_url           = $video_provider->get_video_url();
 			$video_embed_url     = $video_provider->get_video_embed_url();
 			$video_id            = $video_provider->get_video_id();
 
-			continue;
+			break;
 		}
 	}
 
