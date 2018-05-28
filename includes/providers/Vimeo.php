@@ -45,30 +45,3 @@ class Vimeo extends Video_Provider {
 	}
 
 }
-
-
-/**
- * Get the image thumbnail and the video url from a vimeo id.
- *
- * @author Gary Kovar
- *
- * @since  1.0.5
- *
- * @param string $vimeo_id Vimeo video ID.
- *
- * @return array Video information.
- */
-function wds_get_vimeo_details( $vimeo_id ) {
-	$video = array();
-
-	// @todo Get remote checking matching with wds_get_youtube_details.
-	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
-	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
-		$response                     = unserialize( $vimeo_data['body'] );
-		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
-		$video['video_url']           = $response[0]['url'];
-		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
-	}
-
-	return $video;
-}
