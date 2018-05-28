@@ -13,6 +13,14 @@ class Provider_Bootstrap {
 	}
 
 	public function video_providers() {
+		/**
+		 * Allow developers to pass in custom video providers.
+		 * Video providers should extend the Video_Provider class.
+		 *
+		 * @since 1.1.1
+		 *
+		 * @param Video_Provider $value An object that is of a class that extends Video_Provider.
+		 */
 		return apply_filters( 'wds_video_providers', $this->providers );
 	}
 
