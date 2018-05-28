@@ -100,6 +100,8 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 
 	$content = isset( $post->post_content ) ? $post->post_content : '';
 
+	$content_check_length = function_exists( 'the_gutenberg_project' ) ? 4000 : 800;
+
 	/**
 	 * Only check the first 800 characters of our post, by default.
 	 *
@@ -107,7 +109,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	 *
 	 * @param int $value Character limit to search.
 	 */
-	$content = substr( $content, 0, apply_filters( 'wds_featured_images_character_limit', 800 ) );
+	$content = substr( $content, 0, apply_filters( 'wds_featured_images_character_limit', $content_check_length ) );
 
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post_id );
