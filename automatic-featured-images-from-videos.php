@@ -59,6 +59,10 @@ function wds_load_afi() {
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/cli.php' );
 	}
+	require_once( plugin_dir_path( __FILE__ ) . 'includes/Provider_Bootstrap.php' );
+	require_once( plugin_dir_path( __FILE__ ) . 'includes/providers/Video_Provider.php' );
+	require_once( plugin_dir_path( __FILE__ ) . 'includes/providers/Youtube.php' );
+	require_once( plugin_dir_path( __FILE__ ) . 'includes/providers/Vimeo.php' );
 }
 
 /**
@@ -112,37 +116,28 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post_id );
 
-	// Set the video id.
-	$youtube_id          = wds_check_for_youtube( $content );
-	$vimeo_id            = wds_check_for_vimeo( $content );
-	$video_thumbnail_url = '';
+	$providers = new Provider_Bootstrap();
+	$providers->add_provider( new Youtube() );
+	$providers->add_provider( new Vimeo() );
 
-	if ( $youtube_id ) {
-		$youtube_details     = wds_get_youtube_details( $youtube_id );
-		$video_thumbnail_url = $youtube_details['video_thumbnail_url'];
-		$video_url           = $youtube_details['video_url'];
-		$video_embed_url     = $youtube_details['video_embed_url'];
-	}
+	$has_video = false;
+	foreach( $providers->video_providers() as $video_provider ) {
+		if ( $video_provider->match_content( $content ) ) {
+			$has_video         = true;
+			$video_thumbnail_url = $video_provider->get_video_thumbnail_url();
+			$video_url           = $video_provider->get_video_url();
+			$video_embed_url     = $video_provider->get_video_embed_url();
+			$video_id            = $video_provider->get_video_id();
 
-	if ( $vimeo_id ) {
-		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
-		$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
-		$video_url           = $vimeo_details['video_url'];
-		$video_embed_url     = $vimeo_details['video_embed_url'];
+			continue;
+		}
 	}
 
 	if ( $post_id
 	     && ! has_post_thumbnail( $post_id )
 	     && $content
-	     && ( $youtube_details || $vimeo_details )
+	     && $has_video
 	) {
-		$video_id = '';
-		if ( $youtube_id ) {
-			$video_id = $youtube_id;
-		}
-		if ( $vimeo_id ) {
-			$video_id = $vimeo_id;
-		}
 		if ( ! wp_is_post_revision( $post_id ) ) {
 			wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id );
 		}
@@ -150,7 +145,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 
 	if ( $post_id
 	     && $content
-	     && ( $youtube_id || $vimeo_id )
+	     && $has_video
 	) {
 		update_post_meta( $post_id, '_is_video', true );
 		update_post_meta( $post_id, '_video_url', $video_url );
@@ -206,46 +201,6 @@ function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_u
 
 	// Woot! We got an image, so set it as the post thumbnail.
 	set_post_thumbnail( $post_id, $attachment_id );
-}
-
-/**
- * Check if the content contains a youtube url.
- *
- * Props to @rzen for lending his massive brain smarts to help with the regex.
- *
- * @author Gary Kovar
- *
- * @param $content
- *
- * @return string The value of the youtube id.
- *
- */
-function wds_check_for_youtube( $content ) {
-	if ( preg_match( '#\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)#', $content, $youtube_matches ) ) {
-		return $youtube_matches[6];
-	}
-
-	return false;
-}
-
-/**
- * Check if the content contains a vimeo url.
- *
- * Props to @rzen for lending his massive brain smarts to help with the regex.
- *
- * @author Gary Kovar
- *
- * @param $content
- *
- * @return string The value of the vimeo id.
- *
- */
-function wds_check_for_vimeo( $content ) {
-	if ( preg_match( '#\/\/(.+\.)?(vimeo\.com)\/(\d*)#', $content, $vimeo_matches ) ) {
-		return $vimeo_matches[3];
-	}
-
-	return false;
 }
 
 /**
@@ -336,72 +291,6 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 	}
 
 	return $att_id;
-}
-
-/**
- * Get the image thumbnail and the video url from a youtube id.
- *
- * @author Gary Kovar
- *
- * @since 1.0.5
- *
- * @param string $youtube_id Youtube video ID.
- * @return array Video data.
- */
-function wds_get_youtube_details( $youtube_id ) {
-	$video = array();
-	$video_thumbnail_url_string = 'http://img.youtube.com/vi/%s/%s';
-
-	$video_check                      = wp_remote_head( 'https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $youtube_id );
-	if ( 200 === wp_remote_retrieve_response_code( $video_check ) ) {
-		$remote_headers               = wp_remote_head(
-			sprintf(
-				$video_thumbnail_url_string,
-				$youtube_id,
-				'maxresdefault.jpg'
-			)
-		);
-		$video['video_thumbnail_url'] = ( 404 === wp_remote_retrieve_response_code( $remote_headers ) ) ?
-			sprintf(
-				$video_thumbnail_url_string,
-				$youtube_id,
-				'hqdefault.jpg'
-			) :
-			sprintf(
-				$video_thumbnail_url_string,
-				$youtube_id,
-				'maxresdefault.jpg'
-			);
-		$video['video_url']           = 'https://www.youtube.com/watch?v=' . $youtube_id;
-		$video['video_embed_url']     = 'https://www.youtube.com/embed/' . $youtube_id;
-	}
-
-	return $video;
-}
-
-/**
- * Get the image thumbnail and the video url from a vimeo id.
- *
- * @author Gary Kovar
- *
- * @since 1.0.5
- *
- * @param string $vimeo_id Vimeo video ID.
- * @return array Video information.
- */
-function wds_get_vimeo_details( $vimeo_id ) {
-	$video = array();
-
-	// @todo Get remote checking matching with wds_get_youtube_details.
-	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
-	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
-		$response                     = unserialize( $vimeo_data['body'] );
-		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
-		$video['video_url']           = $response[0]['url'];
-		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
-	}
-
-	return $video;
 }
 
 /**
