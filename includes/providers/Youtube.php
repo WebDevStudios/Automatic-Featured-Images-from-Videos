@@ -56,5 +56,5 @@ class Youtube extends Video_Provider {
 }
 
 add_action( 'wds_featured_images_from_video_providers', function( $providers ) {
-	$providers->add_provider( new Youtube() );
+	$providers->add_provider( 'youtube', new Youtube() );
 }, 9, 1 );
