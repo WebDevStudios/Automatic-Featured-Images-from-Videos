@@ -45,3 +45,7 @@ class Vimeo extends Video_Provider {
 	}
 
 }
+
+add_action( 'wds_featured_images_from_video_providers', function( $providers ) {
+	$providers->add_provider( new Vimeo() );
+}, 9, 1 );

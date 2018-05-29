@@ -117,8 +117,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post_id );
 
 	$providers = new Provider_Bootstrap();
-	$providers->add_provider( new Youtube() );
-	$providers->add_provider( new Vimeo() );
+	do_action( 'wds_featured_images_from_video_providers', $providers );
 
 	$has_video = false;
 	foreach ( $providers->video_providers() as $video_provider ) {
