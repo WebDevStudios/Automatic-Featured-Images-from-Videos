@@ -1,6 +1,8 @@
 <?php
 
-class Youtube extends Video_Provider {
+class Youtube implements Video_Provider {
+
+	protected $id;
 
 	public function match_content( $content ) {
 		if ( preg_match( '#\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)#', $content, $youtube_matches ) ) {

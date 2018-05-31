@@ -1,7 +1,8 @@
 <?php
 
-class Vimeo extends Video_Provider {
+class Vimeo implements Video_Provider {
 
+	protected $id;
 	private $thumbnail_url;
 	private $url;
 	private $embed_url;

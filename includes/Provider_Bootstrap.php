@@ -5,8 +5,8 @@ class Provider_Bootstrap {
 	protected $providers = [];
 
 	public function add_provider( $provider_name, $provider ) {
-		if ( ! is_a( $provider, Video_Provider::class ) ) {
-			return new WP_Error( __( 'The passed provider is not a Provider Object', 'automatic-featured-images-from-videos' ) );
+		if ( ! in_array( Video_Provider::class, class_implements( $provider ) ) ) {
+			return new WP_Error( __( 'The passed provider does not implement Video_Provider.', 'automatic-featured-images-from-videos' ) );
 		}
 
 		$this->providers[ $provider_name ] = $provider;
