@@ -2,7 +2,7 @@
 
 class Provider_Bootstrap {
 
-	protected $providers = [];
+	protected $providers = array();
 
 	public function add_provider( $provider_name, $provider ) {
 		if ( ! in_array( Video_Provider::class, class_implements( $provider ) ) ) {
