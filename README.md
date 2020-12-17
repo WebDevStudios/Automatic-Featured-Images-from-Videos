@@ -37,6 +37,9 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 ## Changelog ##
 
+### 1.1.2 ###
+* Fixed: Issues with Youtube HEAD request returning 40x errors
+
 ### 1.1.1 ###
 * Fixed: Extra forward slash in YouTube URLs that was causing 404 errors when trying to add to media library.
 
