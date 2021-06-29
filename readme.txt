@@ -3,17 +3,18 @@
 Contributors: bradparbs, coreymcollins, jtsternberg, webdevstudios, pluginize, binarygary
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
-Requires at least: 3.7
-Tested up to: 5.6.0
-Stable tag: 1.1.2
+Requires at least: 5.0
+Tested up to: 5.7.2
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Requires PHP: 5.6
 
-If a YouTube or Vimeo video exists in the first portion of a post, automatically set the post's featured image to that video's thumbnail.
+If a YouTube or Vimeo video embed exists near the start of a post, we'll automatically set the post's featured image to a thumbnail of the video.
 
 == Description ==
 
-When placing a YouTube or Vimeo video within the first 800 characters of a post, the thumbnail of that video will automatically be sideloaded and set as the featured image for the post as long as the post does not already have a featured image set.
+When placing a YouTube or Vimeo video within the first 4000 characters of a post, the thumbnail of that video will automatically be uploaded and set as the featured image for the post as long as the post does not already have a set featured image.
 
 In addition, after setting the video thumbnail as the featured image, an “is_video” post meta field is updated to allow for the use of conditional statements within your loop.
 
@@ -38,6 +39,16 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 == Screenshots ==
 
 == Changelog ==
+
+= 1.2.0 =
+* Added: Support for potentially larger Vimeo images from API response.
+* Fixed: Various PHP notices and errors.
+* Updated: Minimum PHP version.
+* Updated: bumped up default string length to 4000 characters, for URL searching in content.
+* Updated: exclude user profile URLs from Youtube regex.
+* Updated: Switched all endpoints to make sure we're using HTTPS.
+* Updated: Vimeo endpoint switched to JSON responses.
+* Updated: Plugin description.
 
 = 1.1.2 =
 * Fixed: Issues with Youtube HEAD request returning 40x errors.

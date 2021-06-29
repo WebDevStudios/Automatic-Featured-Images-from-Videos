@@ -1,11 +1,11 @@
 <?php
 /*
  * Plugin Name: Automatic Featured Images from YouTube / Vimeo
- * Plugin URI: http://webdevstudios.com
+ * Plugin URI: https://webdevstudios.com
  * Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that video's thumbnail.
- * Version: 1.1.2
+ * Version: 1.2.0
  * Author: WebDevStudios
- * Author URI: http://webdevstudios.com
+ * Author URI: https://webdevstudios.com
  * License: GPLv2
  * Text Domain: automatic-featured-images-from-videos
  */
@@ -35,7 +35,7 @@ add_action( 'plugins_loaded', 'wds_load_afi' );
 add_action( 'save_post', 'wds_check_if_content_contains_video', 10, 2 );
 
 // Add a meta box to the post types we are checking for video on.
-add_action( 'add_meta_boxes', 'wds_register_display_video_metabox' );
+add_action( 'add_meta_boxes', 'wds_register_display_video_metabox', 10, 2 );
 
 // Create an endpoint that receives the params to start bulk processing.
 add_action( 'wp_ajax_wds_queue_bulk_processing', 'wds_queue_bulk_processing' );
@@ -73,7 +73,7 @@ function wds_load_afi() {
  */
 function wds_set_media_as_featured_image( $post_id, $post ) {
 	wds_check_if_content_contains_video( $post_id, $post );
-	_doing_it_wrong( 'wds_set_media_as_feature_image', esc_html( 'This function has been replaced with wds_check_if_content_contains_video', 'automatic-featured-images-from-videos' ), '4.6' );
+	_doing_it_wrong( 'wds_set_media_as_feature_image', esc_html__( 'This function has been replaced with wds_check_if_content_contains_video', 'automatic-featured-images-from-videos' ), '4.6' );
 }
 
 /**
@@ -94,13 +94,11 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 
 	// We need to prevent trying to assign when trashing or untrashing posts in the list screen.
 	// get_current_screen() was not providing a unique enough value to use here.
-	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'trash', 'untrash' ) )  ) {
+	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], [ 'trash', 'untrash', 'add-menu-item' ] )  ) {
 		return;
 	}
 
 	$content = isset( $post->post_content ) ? $post->post_content : '';
-
-	$content_check_length = function_exists( 'the_gutenberg_project' ) ? 4000 : 800;
 
 	/**
 	 * Only check the first 800 characters of our post, by default.
@@ -109,7 +107,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	 *
 	 * @param int $value Character limit to search.
 	 */
-	$content = substr( $content, 0, apply_filters( 'wds_featured_images_character_limit', $content_check_length ) );
+	$content = substr( $content, 0, apply_filters( 'wds_featured_images_character_limit', 4000 ) );
 
 	// Allow developers to filter the content to allow for searching in postmeta or other places.
 	$content = apply_filters( 'wds_featured_images_from_video_filter_content', $content, $post_id );
@@ -118,19 +116,25 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$youtube_id          = wds_check_for_youtube( $content );
 	$vimeo_id            = wds_check_for_vimeo( $content );
 	$video_thumbnail_url = '';
+	$youtube_details     = [];
+	$vimeo_details       = [];
 
 	if ( $youtube_id ) {
 		$youtube_details     = wds_get_youtube_details( $youtube_id );
-		$video_thumbnail_url = $youtube_details['video_thumbnail_url'];
-		$video_url           = $youtube_details['video_url'];
-		$video_embed_url     = $youtube_details['video_embed_url'];
+		if ( ! empty( $youtube_details ) ) {
+			$video_thumbnail_url = $youtube_details['video_thumbnail_url'];
+			$video_url           = $youtube_details['video_url'];
+			$video_embed_url     = $youtube_details['video_embed_url'];
+		}
 	}
 
 	if ( $vimeo_id ) {
 		$vimeo_details       = wds_get_vimeo_details( $vimeo_id );
-		$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
-		$video_url           = $vimeo_details['video_url'];
-		$video_embed_url     = $vimeo_details['video_embed_url'];
+		if ( ! empty( $vimeo_details ) ) {
+			$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
+			$video_url           = $vimeo_details['video_url'];
+			$video_embed_url     = $vimeo_details['video_embed_url'];
+		}
 	}
 
 	if ( $post_id
@@ -223,7 +227,7 @@ function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_u
  *
  */
 function wds_check_for_youtube( $content ) {
-	if ( preg_match( '#\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)#', $content, $youtube_matches ) ) {
+	if ( preg_match( '#\/\/(www\.)?(youtu|youtube|youtube-nocookie)\.(com|be)\/(?!.*user)(watch|embed)?\/?(\?v=)?([a-zA-Z0-9\-\_]+)#', $content, $youtube_matches ) ) {
 		return $youtube_matches[6];
 	}
 
@@ -262,7 +266,7 @@ function wds_check_for_vimeo( $content ) {
  *
  * @return mixed
  */
-function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null, $video_id ) {
+function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null, $video_id = null ) {
 
 	if ( ! $url || ! $post_id ) {
 		return new WP_Error( 'missing', esc_html__( 'Need a valid URL and post ID...', 'automatic-featured-images-from-videos' ) );
@@ -312,12 +316,12 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
 		$file_array['name'] = $url_filename;
 	}
 
-	$post_data = array(
+	$post_data = [
 		// Just use the original filename (no extension).
 		'post_title'  => get_the_title( $post_id ),
 		// Make sure gets tied to parent.
 		'post_parent' => $post_id,
-	);
+	];
 
 	// Required libraries for media_handle_sideload.
 	require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -351,10 +355,10 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
  * @return array Video data.
  */
 function wds_get_youtube_details( $youtube_id ) {
-	$video = array();
-	$video_thumbnail_url_string = 'http://img.youtube.com/vi/%s/%s';
+	$video = [];
+	$video_thumbnail_url_string = 'https://img.youtube.com/vi/%s/%s';
 
-	$video_check                      = wp_remote_get( 'https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $youtube_id );
+	$video_check                      = wp_remote_get( 'https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=' . $youtube_id );
 	if ( 200 === wp_remote_retrieve_response_code( $video_check ) ) {
 		$remote_headers               = wp_remote_head(
 			sprintf(
@@ -392,14 +396,27 @@ function wds_get_youtube_details( $youtube_id ) {
  * @return array Video information.
  */
 function wds_get_vimeo_details( $vimeo_id ) {
-	$video = array();
+	$video = [];
 
 	// @todo Get remote checking matching with wds_get_youtube_details.
-	$vimeo_data = wp_remote_get( 'http://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.php' );
+	$vimeo_data = wp_remote_get( 'https://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.json' );
 	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
-		$response                     = unserialize( $vimeo_data['body'] );
-		$video['video_thumbnail_url'] = isset( $response[0]['thumbnail_large'] ) ? $response[0]['thumbnail_large'] : false;
-		$video['video_url']           = $response[0]['url'];
+		$response                     = json_decode( $vimeo_data['body'] );
+
+		$large = isset( $response[0]->thumbnail_large ) ? $response[0]->thumbnail_large : '';
+		if ( $large ) {
+			$larger_test = explode( '_', $large );
+			$test_result = wp_remote_head(
+				$larger_test[0]
+			);
+			if ( 200 === wp_remote_retrieve_response_code( $test_result ) ) {
+				$large = $larger_test[0];
+			}
+		}
+
+		// For the moment, we will force jpg since WebP is still iffy.
+		$video['video_thumbnail_url'] = isset( $large ) ? $large . '.jpg' : false;
+		$video['video_url']           = $response[0]->url;
 		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
 	}
 
@@ -471,9 +488,7 @@ function wds_get_embeddable_video_url( $post_id ) {
  * @author Gary Kovar
  * @since 1.1.0
  */
-function wds_register_display_video_metabox() {
-	global $post;
-
+function wds_register_display_video_metabox( $post_type, $post ) {
 	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
 		add_meta_box(
 			'wds_display_video_urls_metabox',
@@ -507,16 +522,16 @@ function wds_video_thumbnail_meta() {
  * @return WP_Query WP_Query object
  */
 function wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_per_page ) {
-	$args  = array(
+	$args  = [
 		'post_type'      => $post_type,
-		'meta_query'     => array(
-			array(
+		'meta_query'     => [
+			[
 				'key'     => '_is_video',
 				'compare' => 'NOT EXISTS',
-			),
-		),
+			],
+		],
 		'posts_per_page' => $posts_per_page,
 		'fields'         => 'ids',
-	);
+	];
 	return new WP_Query( $args );
 }
