@@ -116,6 +116,8 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$youtube_id          = wds_check_for_youtube( $content );
 	$vimeo_id            = wds_check_for_vimeo( $content );
 	$video_thumbnail_url = '';
+	$video_url           = '';
+	$video_embed_url     = '';
 	$youtube_details     = [];
 	$vimeo_details       = [];
 
