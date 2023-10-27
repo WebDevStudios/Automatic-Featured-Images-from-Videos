@@ -66,7 +66,7 @@ function wds_featured_images_from_video_processing_status( $post_type ) {
 /**
  * Return actual processing for specific post.
  *
- * @return string|void
+ * @return string
  */
 function wds_featured_images_from_video_processing_current_disposition() {
 	return esc_html__( 'Processing...', 'wds_automatic_featured_images_from_videos' );
