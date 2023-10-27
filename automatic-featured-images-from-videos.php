@@ -3,7 +3,7 @@
  * Plugin Name: Automatic Featured Images from YouTube / Vimeo
  * Plugin URI: https://webdevstudios.com
  * Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that video's thumbnail.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Author: WebDevStudios
  * Author URI: https://webdevstudios.com
  * License: GPLv2
@@ -116,6 +116,8 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$youtube_id          = wds_check_for_youtube( $content );
 	$vimeo_id            = wds_check_for_vimeo( $content );
 	$video_thumbnail_url = '';
+	$video_url           = '';
+	$video_embed_url     = '';
 	$youtube_details     = [];
 	$vimeo_details       = [];
 
@@ -399,7 +401,7 @@ function wds_get_vimeo_details( $vimeo_id ) {
 	$video = [];
 
 	// @todo Get remote checking matching with wds_get_youtube_details.
-	$vimeo_data = wp_remote_get( 'https://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.json' );
+	$vimeo_data = wp_remote_get( 'https://vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.json' );
 	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
 		$response                     = json_decode( $vimeo_data['body'] );
 

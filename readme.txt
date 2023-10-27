@@ -1,11 +1,11 @@
 === Automatic Featured Images from Videos ===
 
-Contributors: bradparbs, coreymcollins, jtsternberg, webdevstudios, pluginize, binarygary
+Contributors: webdevstudios, pluginize
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 5.0
-Tested up to: 6.3
-Stable tag: 1.2.1
+Tested up to: 6.4
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.6
@@ -40,6 +40,11 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 == Changelog ==
 
+= 1.2.2 =
+* Confirmed compatibility with WordPress 6.4
+* Fixed: PHP notices around video url variables
+* Updated: removed `www.` from Vimeo endpoints that showed permanent redirect messages.
+
 = 1.2.1 =
 * Confirmed compatibility with WordPress 6.3
 
@@ -67,29 +72,3 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 * Added: BETA: WP-CLI support.
 * Fixed: Modified the way the vimeo embed URL is returned.
 * Fixed: Prevent multiple instances of same found image from being uploaded to media library.
-
-= 1.0.5 =
-* Added function wds_get_video_url when passed a post_id returns a video URL.
-* Added function wds_get_embed_video_url when passed a post_id returns a video URL that is embeddable.
-* Added function wds_post_has_video to check if a post_id has video.
-* Deprecated wds_set_media_as_featured_image.
-* Refactored the default save_post entry function to handle logic better.
-
-= 1.0.4 =
-* Store the full video url in post meta _video_url.
-* Refactored checks for video ID.
-
-= 1.0.3 =
-* Switch to using WP HTTP API functions over get_headers(). Hopefully removes potential server config conflicts.
-* Reverse originally incorrect logic in YouTube thumbnail selection based on header results.
-* Return early if saving a revision.
-
-= 1.0.2 =
-* Add support for youtube short links, fixes [#3](https://github.com/WebDevStudios/Automatic-Featured-Images-from-Videos/issues/3)
-
-= 1.0.1 =
-* Fix bug with special characters in YouTube video titles
-* Fix bug where duplicate images would be uploaded and set as featured image when editing a post
-
-= 1.0 =
-* Initial release
