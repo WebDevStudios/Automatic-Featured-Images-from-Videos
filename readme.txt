@@ -1,6 +1,6 @@
 === Automatic Featured Images from Videos ===
 
-Contributors: bradparbs, coreymcollins, jtsternberg, webdevstudios, pluginize, binarygary
+Contributors: webdevstudios, pluginize
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 5.0
