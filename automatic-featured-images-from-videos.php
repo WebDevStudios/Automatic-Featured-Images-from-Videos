@@ -399,7 +399,7 @@ function wds_get_vimeo_details( $vimeo_id ) {
 	$video = [];
 
 	// @todo Get remote checking matching with wds_get_youtube_details.
-	$vimeo_data = wp_remote_get( 'https://www.vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.json' );
+	$vimeo_data = wp_remote_get( 'https://vimeo.com/api/v2/video/' . intval( $vimeo_id ) . '.json' );
 	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
 		$response                     = json_decode( $vimeo_data['body'] );
 
