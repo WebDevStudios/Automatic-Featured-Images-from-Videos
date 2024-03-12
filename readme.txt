@@ -4,8 +4,8 @@ Contributors: webdevstudios, pluginize
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: 1.2.2
+Tested up to: 6.5
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.6
@@ -39,6 +39,9 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 == Screenshots ==
 
 == Changelog ==
+
+= 1.2.3 =
+* Confirmed compatibility with WordPress 6.5
 
 = 1.2.2 =
 * Confirmed compatibility with WordPress 6.4
