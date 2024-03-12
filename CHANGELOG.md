@@ -1,3 +1,7 @@
+= 1.2.3 =
+
+* Confirmed compatibility with WordPress 6.5
+
 = 1.2.2 =
 
 * Confirmed compatibility with WordPress 6.4
