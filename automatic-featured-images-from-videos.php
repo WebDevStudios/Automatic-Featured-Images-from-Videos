@@ -118,6 +118,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 	$video_thumbnail_url = '';
 	$video_url           = '';
 	$video_embed_url     = '';
+	$video_title         = '';
 	$youtube_details     = [];
 	$vimeo_details       = [];
 
@@ -127,6 +128,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 			$video_thumbnail_url = $youtube_details['video_thumbnail_url'];
 			$video_url           = $youtube_details['video_url'];
 			$video_embed_url     = $youtube_details['video_embed_url'];
+			$video_title         = $youtube_details['video_title'];
 		}
 	}
 
@@ -152,7 +154,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 			$video_id = $vimeo_id;
 		}
 		if ( ! wp_is_post_revision( $post_id ) ) {
-			wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id );
+			wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id, $video_title );
 		}
 	}
 
@@ -182,14 +184,18 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
  * @param string $video_thumbnail_url URL of the image thumbnail.
  * @param string $video_id            Video ID from embed.
  */
-function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id = '' ) {
+function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id = '', $video_title = '' ) {
 
 	// Bail if no valid video thumbnail URL.
 	if ( ! $video_thumbnail_url || is_wp_error( $video_thumbnail_url ) ) {
 		return;
 	}
 
-	$post_title = sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title( $post_id ) ) ) . '-' . $video_id;
+	if ( ! empty( $video_title ) ) {
+		$post_title = sanitize_title( $video_title );
+	} else {
+		$post_title = sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title( $post_id ) ) ) . '-' . $video_id;
+	}
 
 	global $wpdb;
 
@@ -382,6 +388,9 @@ function wds_get_youtube_details( $youtube_id ) {
 			);
 		$video['video_url']           = 'https://www.youtube.com/watch?v=' . $youtube_id;
 		$video['video_embed_url']     = 'https://www.youtube.com/embed/' . $youtube_id;
+
+		$video_data = json_decode( wp_remote_retrieve_body( $video_check) );
+		$video['video_title'] = $video_data->title;
 	}
 
 	return $video;
