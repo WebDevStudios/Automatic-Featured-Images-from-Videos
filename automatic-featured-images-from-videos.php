@@ -138,6 +138,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 			$video_thumbnail_url = $vimeo_details['video_thumbnail_url'];
 			$video_url           = $vimeo_details['video_url'];
 			$video_embed_url     = $vimeo_details['video_embed_url'];
+			$video_title         = $vimeo_details['video_title'];
 		}
 	}
 
@@ -429,6 +430,7 @@ function wds_get_vimeo_details( $vimeo_id ) {
 		$video['video_thumbnail_url'] = isset( $large ) ? $large . '.jpg' : false;
 		$video['video_url']           = $response[0]->url;
 		$video['video_embed_url']     = 'https://player.vimeo.com/video/' . $vimeo_id;
+		$video['video_title']         = $response[0]->title;
 	}
 
 	return $video;
