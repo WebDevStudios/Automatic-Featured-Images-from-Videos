@@ -189,7 +189,7 @@ function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_u
 		return;
 	}
 
-	$post_title = sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title() ) ) . '-' . $video_id;
+	$post_title = sanitize_title( preg_replace( '/[^a-zA-Z0-9\s]/', '-', get_the_title( $post_id ) ) ) . '-' . $video_id;
 
 	global $wpdb;
 
