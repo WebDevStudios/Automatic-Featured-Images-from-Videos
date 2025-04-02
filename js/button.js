@@ -13,7 +13,11 @@ jQuery(document).ready(function () {
 			jQuery.ajax({
 				type: "POST",
 				url : ajaxurl,
-				data: {action: 'wds_queue_bulk_processing', posttype: wds_featured_image_from_vid_args.post_type}
+				data: {
+					action      : 'wds_queue_bulk_processing',
+					posttype    : wds_featured_image_from_vid_args.post_type,
+					wdsafi_nonce: wds_featured_image_from_vid_args.nonce,
+				}
 			});
 		});
 	}
