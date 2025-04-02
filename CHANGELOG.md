@@ -1,3 +1,12 @@
+= 1.2.5 =
+
+* Updated: added nonce verification to bulk processing cron scheduling request.
+
+= 1.2.4 =
+
+* Fixed: Better file naming of incoming images, based on youtube/video title value.
+* Confirmed compatibility with WordPress 6.6.x
+
 = 1.2.3 =
 
 * Confirmed compatibility with WordPress 6.5
