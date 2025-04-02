@@ -21,15 +21,16 @@ function wds_customize_post_buttons() {
 	global $post_type;
 
 	// Allow developers to pass in custom CPTs to process.
-	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', array( 'post', 'page' ) );
+	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', [ 'post', 'page' ] );
 
 	if ( is_array( $type_array ) && in_array( $post_type, $type_array ) ) {
-		$args = array(
+		$args = [
 			'post_type'       => $post_type,
 			'status'          => wds_featured_images_from_video_processing_status( $post_type ),
 			'processing_text' => wds_featured_images_from_video_processing_current_disposition(),
 			'bulk_text'       => esc_html__( 'Bulk add video thumbnails', 'wds_automatic_featured_images_from_videos' ),
-		);
+			'nonce'           => wp_create_nonce( 'wdsafi-ajax-nonce' )
+		];
 
 		wp_localize_script( 'wds_featured_images_from_video_script', 'wds_featured_image_from_vid_args', $args );
 		wp_enqueue_script( 'wds_featured_images_from_video_script' );
