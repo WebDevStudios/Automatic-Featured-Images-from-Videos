@@ -15,6 +15,10 @@
  */
 function wds_queue_bulk_processing() {
 
+	if ( empty( $_POST['wdsafi_nonce'] ) || ! wp_verify_nonce( $_POST['wdsafi_nonce'], 'wdsafi-ajax-nonce' ) ) {
+		wp_die( esc_html__( 'Nonce failure', 'automatic-featured-images-from-videos' ) );
+	}
+
 	/**
 	 * Allow developers to pass in custom post types to process.
 	 *
