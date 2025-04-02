@@ -15,6 +15,10 @@
  */
 function wds_queue_bulk_processing() {
 
+	if ( empty( $_POST['wdsafi_nonce'] ) || ! wp_verify_nonce( $_POST['wdsafi_nonce'], 'wdsafi-ajax-nonce' ) ) {
+		wp_die( esc_html__( 'Nonce failure', 'automatic-featured-images-from-videos' ) );
+	}
+
 	/**
 	 * Allow developers to pass in custom post types to process.
 	 *
@@ -22,12 +26,12 @@ function wds_queue_bulk_processing() {
 	 *
 	 * @param array $value Array of post types to process.
 	 */
-	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', array( 'post', 'page' ) );
+	$type_array = apply_filters( 'wds_featured_images_from_video_post_types', [ 'post', 'page' ] );
 
 	if ( ! in_array( $_POST['posttype'], $type_array ) ) {
 		return;
 	}
-	wp_schedule_single_event( time() + 60, 'wds_bulk_process_video_query_init', array( $_POST['posttype'] ) );
+	wp_schedule_single_event( time() + 60, 'wds_bulk_process_video_query_init', [ $_POST['posttype'] ] );
 }
 
 /**
@@ -57,6 +61,6 @@ function wds_bulk_process_video_query( $post_type ) {
 
 	$reschedule_task = wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_to_process );
 	if ( $reschedule_task->post_count > 1 ) {
-		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', array( $post_type ) );
+		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', [ $post_type ] );
 	}
 }
