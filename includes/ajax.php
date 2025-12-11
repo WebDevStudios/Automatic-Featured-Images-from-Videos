@@ -56,7 +56,7 @@ function wds_featured_images_from_video_processing_status( $post_type ) {
 	// Check if we have any to process.
 	$query = wds_automatic_featured_images_from_videos_wp_query( $post_type, apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity', 10 ) );
 
-	if ( $query->post_count > 1 ) {
+	if ( $query->post_count >= 1 ) {
 		return 'ready_to_process';
 	}
 
