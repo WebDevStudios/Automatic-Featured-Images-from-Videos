@@ -46,7 +46,7 @@ function wds_customize_post_buttons() {
  * @param string $post_type Post type to check process for.
  * @return string
  */
-function wds_featured_images_from_video_processing_status( $post_type ) {
+function wds_featured_images_from_video_processing_status( string $post_type ) {
 
 	// Check if the bulk task has already been scheduled.
 	if ( wp_next_scheduled( 'wds_bulk_process_video_query_init', [ $post_type ] ) ) {
