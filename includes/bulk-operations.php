@@ -45,7 +45,7 @@ function wds_queue_bulk_processing() {
  *
  * @param string $post_type Post type to process.
  */
-function wds_bulk_process_video_query( $post_type ) {
+function wds_bulk_process_video_query( string $post_type ) {
 
 	$post_count = 10;
 

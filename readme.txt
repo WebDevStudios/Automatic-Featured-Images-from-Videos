@@ -2,13 +2,13 @@
 
 Contributors: webdevstudios, pluginize
 Donate link: http://webdevstudios.com/
-Tags: video, youtube, vimeo, featured image
+Tags: youtube, vimeo, automatic featured image, featured images, video
 Requires at least: 5.0
-Tested up to: 6.7.2
-Stable tag: 1.2.5
+Tested up to: 6.9
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Requires PHP: 5.6
+Requires PHP: 7.4
 
 If a YouTube or Vimeo video embed exists near the start of a post, we'll automatically set the post's featured image to a thumbnail of the video.
 
@@ -39,6 +39,12 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 == Screenshots ==
 
 == Changelog ==
+
+= 1.2.6 =
+* Fixed: bulk processing if only 0ne post was found needing processing. Originally needed 2 or more
+* Fixed: missed textdomain
+* Bumped required PHP to 7.4
+* Confirmed compatibility with WordPress 6.9
 
 = 1.2.5 =
 * Updated: added nonce verification to bulk processing cron scheduling request.

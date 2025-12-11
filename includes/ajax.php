@@ -16,7 +16,7 @@
 function wds_customize_post_buttons() {
 
 	// Register the script we might use.
-	wp_register_script( 'wds_featured_images_from_video_script', WDSAFI_DIR . 'js/button.js' );
+	wp_register_script( 'wds_featured_images_from_video_script', WDSAFI_DIR . 'js/button.js', [], '1.2.6' );
 
 	global $post_type;
 
@@ -46,17 +46,17 @@ function wds_customize_post_buttons() {
  * @param string $post_type Post type to check process for.
  * @return string
  */
-function wds_featured_images_from_video_processing_status( $post_type ) {
+function wds_featured_images_from_video_processing_status( string $post_type ) {
 
 	// Check if the bulk task has already been scheduled.
-	if ( wp_next_scheduled( 'wds_bulk_process_video_query_init', array( $post_type ) ) ) {
+	if ( wp_next_scheduled( 'wds_bulk_process_video_query_init', [ $post_type ] ) ) {
 		return 'running';
 	}
 
 	// Check if we have any to process.
 	$query = wds_automatic_featured_images_from_videos_wp_query( $post_type, apply_filters( 'wds_featured_images_from_video_posts_bulk_quantity', 10 ) );
 
-	if ( $query->post_count > 1 ) {
+	if ( $query->post_count >= 1 ) {
 		return 'ready_to_process';
 	}
 
@@ -70,5 +70,5 @@ function wds_featured_images_from_video_processing_status( $post_type ) {
  * @return string
  */
 function wds_featured_images_from_video_processing_current_disposition() {
-	return esc_html__( 'Processing...', 'wds_automatic_featured_images_from_videos' );
+	return esc_html__( 'Processing...', 'automatic-featured-images-from-videos' );
 }

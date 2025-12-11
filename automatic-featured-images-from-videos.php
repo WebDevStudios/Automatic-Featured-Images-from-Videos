@@ -1,9 +1,9 @@
 <?php
-/*
+/**
  * Plugin Name: Automatic Featured Images from YouTube / Vimeo
  * Plugin URI: https://webdevstudios.com
- * Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that video's thumbnail.
- * Version: 1.2.5
+ * Description: Automatically create featured images from YouTube and Vimeo generated video thumbnails, from above the fold embeds.
+ * Version: 1.2.6
  * Author: WebDevStudios
  * Author URI: https://webdevstudios.com
  * License: GPLv2
@@ -71,7 +71,7 @@ function wds_load_afi() {
  * @param int     $post_id Post ID.
  * @param WP_Post $post    Post object.
  */
-function wds_set_media_as_featured_image( $post_id, $post ) {
+function wds_set_media_as_featured_image( int $post_id, WP_Post $post ) {
 	wds_check_if_content_contains_video( $post_id, $post );
 	_doing_it_wrong( 'wds_set_media_as_feature_image', esc_html__( 'This function has been replaced with wds_check_if_content_contains_video', 'automatic-featured-images-from-videos' ), '4.6' );
 }
@@ -83,10 +83,10 @@ function wds_set_media_as_featured_image( $post_id, $post ) {
  *
  * @since  1.0.5
  *
- * @param int    $post_id ID of the post being saved.
- * @param object $post    Post object.
+ * @param int     $post_id ID of the post being saved.
+ * @param WP_Post $post    Post object.
  */
-function wds_check_if_content_contains_video( $post_id, $post ) {
+function wds_check_if_content_contains_video( int $post_id, WP_Post $post ) {
 
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
@@ -98,7 +98,7 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
 		return;
 	}
 
-	$content = isset( $post->post_content ) ? $post->post_content : '';
+	$content = $post->post_content ?? '';
 
 	/**
 	 * Only check the first 800 characters of our post, by default.
@@ -184,8 +184,9 @@ function wds_check_if_content_contains_video( $post_id, $post ) {
  * @param int    $post_id             ID of the post being saved.
  * @param string $video_thumbnail_url URL of the image thumbnail.
  * @param string $video_id            Video ID from embed.
+ * @param string $video_title         Video title from embed
  */
-function wds_set_video_thumbnail_as_featured_image( $post_id, $video_thumbnail_url, $video_id = '', $video_title = '' ) {
+function wds_set_video_thumbnail_as_featured_image( int $post_id, string $video_thumbnail_url, string $video_id = '', string $video_title = '' ) {
 
 	// Bail if no valid video thumbnail URL.
 	if ( ! $video_thumbnail_url || is_wp_error( $video_thumbnail_url ) ) {
@@ -275,7 +276,7 @@ function wds_check_for_vimeo( $content ) {
  *
  * @return mixed
  */
-function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filename = null, $video_id = null ) {
+function wds_ms_media_sideload_image_with_new_filename( string $url, int $post_id, string $filename = '', string $video_id = '' ) {
 
 	if ( ! $url || ! $post_id ) {
 		return new WP_Error( 'missing', esc_html__( 'Need a valid URL and post ID...', 'automatic-featured-images-from-videos' ) );
@@ -363,7 +364,7 @@ function wds_ms_media_sideload_image_with_new_filename( $url, $post_id, $filenam
  * @param string $youtube_id Youtube video ID.
  * @return array Video data.
  */
-function wds_get_youtube_details( $youtube_id ) {
+function wds_get_youtube_details( string $youtube_id ): array {
 	$video = [];
 	$video_thumbnail_url_string = 'https://img.youtube.com/vi/%s/%s';
 
@@ -407,7 +408,7 @@ function wds_get_youtube_details( $youtube_id ) {
  * @param string $vimeo_id Vimeo video ID.
  * @return array Video information.
  */
-function wds_get_vimeo_details( $vimeo_id ) {
+function wds_get_vimeo_details( string $vimeo_id ): array {
 	$video = [];
 
 	// @todo Get remote checking matching with wds_get_youtube_details.
@@ -415,7 +416,7 @@ function wds_get_vimeo_details( $vimeo_id ) {
 	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
 		$response                     = json_decode( $vimeo_data['body'] );
 
-		$large = isset( $response[0]->thumbnail_large ) ? $response[0]->thumbnail_large : '';
+		$large = $response[0]->thumbnail_large ?? '';
 		if ( $large ) {
 			$larger_test = explode( '_', $large );
 			$test_result = wp_remote_head(
@@ -446,7 +447,7 @@ function wds_get_vimeo_details( $vimeo_id ) {
  * @param int $post_id WP post ID to check for video on.
  * @return bool
  */
-function wds_post_has_video( $post_id ) {
+function wds_post_has_video( int $post_id ) {
 	if ( ! metadata_exists( 'post', $post_id, '_is_video' ) ) {
 		wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
 	}
@@ -464,7 +465,7 @@ function wds_post_has_video( $post_id ) {
  * @param int $post_id Post ID to get video url for.
  * @return string
  */
-function wds_get_video_url( $post_id ) {
+function wds_get_video_url( int $post_id ): string {
 	if ( wds_post_has_video( $post_id ) ) {
 		if ( ! metadata_exists( 'post', $post_id, '_video_url' ) ) {
 			wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
@@ -485,7 +486,7 @@ function wds_get_video_url( $post_id ) {
  * @param int $post_id Post ID to grab video for.
  * @return string
  */
-function wds_get_embeddable_video_url( $post_id ) {
+function wds_get_embeddable_video_url( int $post_id ) : string {
 	if ( wds_post_has_video( $post_id ) ) {
 		if ( ! metadata_exists( 'post', $post_id, '_video_embed_url' ) ) {
 			wds_check_if_content_contains_video( $post_id, get_post( $post_id ) );
@@ -500,8 +501,10 @@ function wds_get_embeddable_video_url( $post_id ) {
  * Register a metabox to display the video on post edit view.
  * @author Gary Kovar
  * @since 1.1.0
+ *
+ * @param string $post_type Current post type for post being rendered
  */
-function wds_register_display_video_metabox( $post_type, $post ) {
+function wds_register_display_video_metabox( string $post_type, WP_Post $post ) {
 	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
 		add_meta_box(
 			'wds_display_video_urls_metabox',
@@ -534,7 +537,7 @@ function wds_video_thumbnail_meta() {
  * @param int    $posts_per_page Posts per page to query for.
  * @return WP_Query WP_Query object
  */
-function wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_per_page ) {
+function wds_automatic_featured_images_from_videos_wp_query( string $post_type, int $posts_per_page ): WP_Query {
 	$args  = [
 		'post_type'      => $post_type,
 		'meta_query'     => [
