@@ -70,5 +70,5 @@ function wds_featured_images_from_video_processing_status( string $post_type ) {
  * @return string
  */
 function wds_featured_images_from_video_processing_current_disposition() {
-	return esc_html__( 'Processing...', 'wds_automatic_featured_images_from_videos' );
+	return esc_html__( 'Processing...', 'automatic-featured-images-from-videos' );
 }
