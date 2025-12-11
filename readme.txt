@@ -40,6 +40,12 @@ In addition, after setting the video thumbnail as the featured image, an “is_v
 
 == Changelog ==
 
+= 1.2.6 =
+* Fixed: bulk processing if only 0ne post was found needing processing. Originally needed 2 or more
+* Fixed: missed textdomain
+* Bumped required PHP to 7.4
+* Confirmed compatibility with WordPress 6.9
+
 = 1.2.5 =
 * Updated: added nonce verification to bulk processing cron scheduling request.
 
