@@ -1,9 +1,9 @@
 <?php
-/*
+/**
  * Plugin Name: Automatic Featured Images from YouTube / Vimeo
  * Plugin URI: https://webdevstudios.com
- * Description: If a YouTube or Vimeo video exists in the first few paragraphs of a post, automatically set the post's featured image to that video's thumbnail.
- * Version: 1.2.5
+ * Description: Automatically create featured images from YouTube and Vimeo generated video thumbnails, from above the fold embeds.
+ * Version: 1.2.6
  * Author: WebDevStudios
  * Author URI: https://webdevstudios.com
  * License: GPLv2
