@@ -98,7 +98,7 @@ function wds_check_if_content_contains_video( int $post_id, WP_Post $post ) {
 		return;
 	}
 
-	$content = isset( $post->post_content ) ? $post->post_content : '';
+	$content = $post->post_content ?? '';
 
 	/**
 	 * Only check the first 800 characters of our post, by default.
@@ -416,7 +416,7 @@ function wds_get_vimeo_details( string $vimeo_id ): array {
 	if ( 200 === wp_remote_retrieve_response_code( $vimeo_data ) ) {
 		$response                     = json_decode( $vimeo_data['body'] );
 
-		$large = isset( $response[0]->thumbnail_large ) ? $response[0]->thumbnail_large : '';
+		$large = $response[0]->thumbnail_large ?? '';
 		if ( $large ) {
 			$larger_test = explode( '_', $large );
 			$test_result = wp_remote_head(
