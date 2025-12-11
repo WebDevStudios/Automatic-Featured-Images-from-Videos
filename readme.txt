@@ -4,11 +4,11 @@ Contributors: webdevstudios, pluginize
 Donate link: http://webdevstudios.com/
 Tags: video, youtube, vimeo, featured image
 Requires at least: 5.0
-Tested up to: 6.7.2
-Stable tag: 1.2.5
+Tested up to: 6.9
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Requires PHP: 5.6
+Requires PHP: 7.4
 
 If a YouTube or Vimeo video embed exists near the start of a post, we'll automatically set the post's featured image to a thumbnail of the video.
 
