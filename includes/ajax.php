@@ -49,7 +49,7 @@ function wds_customize_post_buttons() {
 function wds_featured_images_from_video_processing_status( $post_type ) {
 
 	// Check if the bulk task has already been scheduled.
-	if ( wp_next_scheduled( 'wds_bulk_process_video_query_init', array( $post_type ) ) ) {
+	if ( wp_next_scheduled( 'wds_bulk_process_video_query_init', [ $post_type ] ) ) {
 		return 'running';
 	}
 
