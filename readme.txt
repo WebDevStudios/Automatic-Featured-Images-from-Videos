@@ -2,7 +2,7 @@
 
 Contributors: webdevstudios, pluginize
 Donate link: http://webdevstudios.com/
-Tags: video, youtube, vimeo, featured image
+Tags: youtube, vimeo, automatic featured image, featured images, video
 Requires at least: 5.0
 Tested up to: 6.9
 Stable tag: 1.2.6
