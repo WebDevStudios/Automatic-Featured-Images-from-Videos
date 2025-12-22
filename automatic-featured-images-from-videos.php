@@ -502,9 +502,14 @@ function wds_get_embeddable_video_url( int $post_id ) : string {
  * @author Gary Kovar
  * @since 1.1.0
  *
- * @param string $post_type Current post type for post being rendered
+ * @param string  $post_type Current post type for post being rendered.
+ * @param WP_Post $post      Current post being rendered
  */
-function wds_register_display_video_metabox( string $post_type, WP_Post $post ) {
+function wds_register_display_video_metabox( $post_type, $post ) {
+	if ( ! $post instanceof WP_Post ) {
+		return;
+	}
+
 	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
 		add_meta_box(
 			'wds_display_video_urls_metabox',
