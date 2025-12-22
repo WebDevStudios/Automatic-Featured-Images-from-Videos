@@ -3,7 +3,7 @@
  * Plugin Name: Automatic Featured Images from YouTube / Vimeo
  * Plugin URI: https://webdevstudios.com
  * Description: Automatically create featured images from YouTube and Vimeo generated video thumbnails, from above the fold embeds.
- * Version: 1.2.6
+ * Version: 1.2.7
  * Author: WebDevStudios
  * Author URI: https://webdevstudios.com
  * License: GPLv2
@@ -502,9 +502,14 @@ function wds_get_embeddable_video_url( int $post_id ) : string {
  * @author Gary Kovar
  * @since 1.1.0
  *
- * @param string $post_type Current post type for post being rendered
+ * @param string  $post_type Current post type for post being rendered.
+ * @param WP_Post $post      Current post being rendered
  */
-function wds_register_display_video_metabox( string $post_type, WP_Post $post ) {
+function wds_register_display_video_metabox( $post_type, $post ) {
+	if ( ! $post instanceof WP_Post ) {
+		return;
+	}
+
 	if ( get_post_meta( $post->ID, '_is_video', true ) ) {
 		add_meta_box(
 			'wds_display_video_urls_metabox',
@@ -518,10 +523,10 @@ function wds_register_display_video_metabox( string $post_type, WP_Post $post ) 
  * Populate the metabox.
  * @author Gary Kovar
  * @since 1.1.0
+ *
+ * @param WP_Post $post Post being rendered.
  */
-function wds_video_thumbnail_meta() {
-	global $post;
-
+function wds_video_thumbnail_meta( $post ) {
 	echo '<h3>' . esc_html__( 'Video URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
 	echo wds_get_video_url($post->ID);
 	echo '<h3>' . esc_html__( 'Video Embed URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';

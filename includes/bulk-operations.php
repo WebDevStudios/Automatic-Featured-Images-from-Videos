@@ -60,7 +60,7 @@ function wds_bulk_process_video_query( string $post_type ) {
 	}
 
 	$reschedule_task = wds_automatic_featured_images_from_videos_wp_query( $post_type, $posts_to_process );
-	if ( $reschedule_task->post_count > 1 ) {
+	if ( $reschedule_task->post_count >= 1 ) {
 		wp_schedule_single_event( time() + ( 60 * 10 ), 'wds_bulk_process_video_query_init', [ $post_type ] );
 	}
 }
