@@ -3,7 +3,7 @@
  * Plugin Name: Automatic Featured Images from YouTube / Vimeo
  * Plugin URI: https://webdevstudios.com
  * Description: Automatically create featured images from YouTube and Vimeo generated video thumbnails, from above the fold embeds.
- * Version: 1.2.6
+ * Version: 1.2.7
  * Author: WebDevStudios
  * Author URI: https://webdevstudios.com
  * License: GPLv2

@@ -1,3 +1,13 @@
+= 1.2.7 =
+* Fixed: more edits around checking for 2 or more items vs 1 item to process
+* Fixed: Fatal error on Comment screen with add_meta_boxes callback.
+
+= 1.2.6 =
+* Fixed: bulk processing if only 0ne post was found needing processing. Originally needed 2 or more
+* Fixed: missed textdomain
+* Bumped required PHP to 7.4
+* Confirmed compatibility with WordPress 6.9
+
 = 1.2.5 =
 
 * Updated: added nonce verification to bulk processing cron scheduling request.
