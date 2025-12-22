@@ -523,10 +523,10 @@ function wds_register_display_video_metabox( $post_type, $post ) {
  * Populate the metabox.
  * @author Gary Kovar
  * @since 1.1.0
+ *
+ * @param WP_Post $post Post being rendered.
  */
-function wds_video_thumbnail_meta() {
-	global $post;
-
+function wds_video_thumbnail_meta( $post ) {
 	echo '<h3>' . esc_html__( 'Video URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
 	echo wds_get_video_url($post->ID);
 	echo '<h3>' . esc_html__( 'Video Embed URL', 'wds_automatic_featured_images_from_videos' ) . '</h3>';
