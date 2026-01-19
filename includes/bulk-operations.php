@@ -15,6 +15,10 @@
  */
 function wds_queue_bulk_processing() {
 
+	if ( ! current_user_can( 'edit_others_posts' ) && ! current_user_can( 'edit_others_pages' ) ) {
+		return;
+	}
+
 	if ( empty( $_POST['wdsafi_nonce'] ) || ! wp_verify_nonce( $_POST['wdsafi_nonce'], 'wdsafi-ajax-nonce' ) ) {
 		wp_die( esc_html__( 'Nonce failure', 'automatic-featured-images-from-videos' ) );
 	}
