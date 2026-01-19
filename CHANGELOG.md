@@ -1,3 +1,6 @@
+= 1.2.8 =
+* Fixed: reported security vulnerability around bulk processing.
+
 = 1.2.7 =
 * Fixed: more edits around checking for 2 or more items vs 1 item to process
 * Fixed: Fatal error on Comment screen with add_meta_boxes callback.
