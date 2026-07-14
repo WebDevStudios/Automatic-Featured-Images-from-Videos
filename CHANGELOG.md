@@ -1,3 +1,6 @@
+= 1.2.9 =
+* Updated: confirmed compatibility with WP 7.0
+
 = 1.2.8 =
 * Fixed: reported security vulnerability around bulk processing.
 
